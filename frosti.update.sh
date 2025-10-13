@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # --- Configuration ---
-UPSTREAM_REPO="https://github.com/EveSunMaple/Frosti.git"
+UPSTREAM_REPO="https://github.com/lnscq/Danny-s-Blog"
 TEMP_DIR="frosti_temp_update"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 I18N_DIR="$SCRIPT_DIR/src/i18n"

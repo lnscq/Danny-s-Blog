@@ -10,7 +10,7 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
 <BaseLayout title="Home">
   <MainCard
     title="欢迎来到Danny的博客"
-    description="这里是代码的乐园，创意的港湾 🚀"
+    description="欢迎大家来玩喵~🐱"
     textOverlay="DANNY'S SPACE"
     infoIcon="lucide:sparkles"
   >
@@ -31,7 +31,7 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
           </div>
 
           <h1 class="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent leading-tight animate-gradient">
-            Danny的狗窝
+            Danny的博客
           </h1>
           <p class="text-xl text-base-content/80 max-w-3xl mb-8 leading-relaxed">
             分享些有趣的内容~
@@ -39,14 +39,14 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
           
           <!-- Animated CTA Buttons -->
           <div class="flex flex-wrap gap-4 justify-center mb-8">
-            <a href="/blog" class="btn btn-primary gap-3 px-8 py-4 text-lg font-semibold transform hover:scale-105 transition-all duration-300 btn-shine-effect group">
+            <a href="/blog" class="btn btn-primary gap-3 px-8 py-4 text-lg font-semibold transform hover:scale-105 transition-all duration-300 btn-shine-effect group flex items-center">
               <Icon name="lucide:book-open" class="w-6 h-6 group-hover:animate-bounce" />
-              <span>探索博客</span>
+              <span class="leading-none">探索博客</span>
               <Icon name="lucide:arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </a>
-            <a href="https://github.com/lnscq?tab=repositories" target="_blank" class="btn btn-outline gap-3 px-8 py-4 text-lg font-semibold border-2 hover:border-primary hover:bg-primary/10 transition-all duration-300 group">
+            <a href="https://github.com/lnscq?tab=repositories" target="_blank" class="btn btn-outline gap-3 px-8 py-4 text-lg font-semibold border-2 hover:border-primary hover:bg-primary/10 transition-all duration-300 group flex items-center">
               <Icon name="lucide:rocket" class="w-6 h-6 group-hover:animate-pulse" />
-              <span>我的项目</span>
+              <span class="leading-none">我的项目</span>
             </a>
           </div>
 
@@ -121,39 +121,6 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
         </div>
       </section>
 
-      <!-- Live Status Widget -->
-      <section class="py-8">
-        <h2 class="text-3xl font-bold mb-8 text-center flex items-center justify-center gap-3">
-          <Icon name="lucide:activity" class="w-8 h-8 text-green-500" />
-          <span>实时状态</span>
-        </h2>
-        
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div class="status-widget bg-base-200 rounded-xl p-4 text-center group hover:bg-primary/10 transition-all duration-300">
-            <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">👨‍💻</div>
-            <div class="text-sm text-base-content/60">当前状态</div>
-            <div class="font-bold text-primary">编码中</div>
-          </div>
-          
-          <div class="status-widget bg-base-200 rounded-xl p-4 text-center group hover:bg-secondary/10 transition-all duration-300">
-            <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">☕</div>
-            <div class="text-sm text-base-content/60">今日咖啡</div>
-            <div class="font-bold text-secondary">2杯</div>
-          </div>
-          
-          <div class="status-widget bg-base-200 rounded-xl p-4 text-center group hover:bg-accent/10 transition-all duration-300">
-            <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">🎵</div>
-            <div class="text-sm text-base-content/60">正在播放</div>
-            <div class="font-bold text-accent">Lo-Fi Coding</div>
-          </div>
-          
-          <div class="status-widget bg-base-200 rounded-xl p-4 text-center group hover:bg-green-500/10 transition-all duration-300">
-            <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">🐛</div>
-            <div class="text-sm text-base-content/60">今日BUG</div>
-            <div class="font-bold text-green-500">3个已解决</div>
-          </div>
-        </div>
-      </section>
 
       <!-- Quick Links -->
       <section class="py-8 text-center">
