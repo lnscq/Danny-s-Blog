@@ -9,164 +9,217 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
 
 <BaseLayout title="Home">
   <MainCard
-    title="Welcome to Frosti"
-    description="A modern, responsive, feature-rich blog theme for Astro with dark/light mode and customizable options."
-    textOverlay="HOME"
-    infoIcon="lucide:info"
+    title="欢迎来到Danny的博客"
+    description="这里是代码的乐园，创意的港湾 🚀"
+    textOverlay="DANNY'S SPACE"
+    infoIcon="lucide:sparkles"
   >
-    <div class="space-y-8">
-      <!-- Hero Section -->
-      <section class="py-6">
+    <div class="space-y-12">
+      <!-- Hero Section with Animation -->
+      <section class="py-8">
         <div class="flex flex-col items-center text-center">
-          <h1
-            class="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-loose"
-          >
-            🌟 Frosti Blog Theme
+          <!-- Animated Avatar -->
+          <div class="relative mb-6">
+            <div class="w-24 h-24 rounded-full bg-gradient-to-r from-primary to-secondary p-1 animate-pulse">
+              <div class="w-full h-full rounded-full bg-base-100 flex items-center justify-center">
+                <span class="text-2xl">🐶</span>
+              </div>
+            </div>
+            <div class="absolute -top-2 -right-2 w-6 h-6 bg-accent rounded-full flex items-center justify-center">
+              <span class="text-xs">✨</span>
+            </div>
+          </div>
+
+          <h1 class="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent leading-tight animate-gradient">
+            Danny的狗窝
           </h1>
-          <p class="text-xl text-base-content/80 max-w-3xl mb-8">
-            A minimal, responsive, and feature-rich Astro blog theme designed for creators who value beautiful content
-            presentation and exceptional performance.
+          <p class="text-xl text-base-content/80 max-w-3xl mb-8 leading-relaxed">
+            分享些有趣的内容~
           </p>
-          <div class="flex flex-wrap gap-4 justify-center">
-            <a href="/blog" class="btn btn-primary gap-2 btn-shine-effect">
-              <Icon name="lucide:book-open" class="w-5 h-5" />
-              <span>Explore Blog</span>
+          
+          <!-- Animated CTA Buttons -->
+          <div class="flex flex-wrap gap-4 justify-center mb-8">
+            <a href="/blog" class="btn btn-primary gap-3 px-8 py-4 text-lg font-semibold transform hover:scale-105 transition-all duration-300 btn-shine-effect group">
+              <Icon name="lucide:book-open" class="w-6 h-6 group-hover:animate-bounce" />
+              <span>探索博客</span>
+              <Icon name="lucide:arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </a>
-            <a href="https://github.com/EveSunMaple/Frosti" target="_blank" class="btn btn-outline gap-2">
-              <Icon name="lucide:github" class="w-5 h-5" />
-              <span>Star on GitHub</span>
+            <a href="https://github.com/lnscq?tab=repositories" target="_blank" class="btn btn-outline gap-3 px-8 py-4 text-lg font-semibold border-2 hover:border-primary hover:bg-primary/10 transition-all duration-300 group">
+              <Icon name="lucide:rocket" class="w-6 h-6 group-hover:animate-pulse" />
+              <span>我的项目</span>
             </a>
+          </div>
+
+          <!-- Floating Elements -->
+          <div class="flex gap-6 mt-4">
+            <div class="flex items-center gap-2 text-sm text-base-content/60">
+              <div class="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
+              <span>在线摸鱼中</span>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- Features Section -->
-      <section class="py-6">
-        <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
-          <Icon name="lucide:sparkles" class="w-6 h-6 text-primary" />
-          <span>Features</span>
+      <!-- Interactive Features Grid -->
+      <section class="py-8">
+        <h2 class="text-3xl font-bold mb-8 text-center flex items-center justify-center gap-3">
+          <Icon name="lucide:zap" class="w-8 h-8 text-yellow-500" />
+          <span>特色功能</span>
         </h2>
-
+        
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <FeatureCard
-            title="Responsive Design"
-            description="Fully responsive design that looks great on all devices from mobile to desktop."
-            icon="lucide:smartphone"
-            color="oklch(0.7 0.2 30)"
-          />
+          <div class="feature-card group p-6 rounded-2xl bg-gradient-to-br from-base-200 to-base-300 border border-base-300 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2">
+            <div class="text-3xl mb-4 text-primary group-hover:scale-110 transition-transform duration-300">
+              <Icon name="lucide:code-2" class="w-12 h-12" />
+            </div>
+            <h3 class="text-xl font-bold mb-3">技术分享</h3>
+            <p class="text-base-content/70 leading-relaxed">
+              前沿技术解析、实战经验总结、源码深度剖析，让代码说话 💻
+            </p>
+          </div>
 
-          <FeatureCard
-            title="Dark/Light Mode"
-            description="Toggle between light and dark themes with a beautiful transition effect."
-            icon="lucide:moon"
-            color="oklch(0.65 0.2 280)"
-          />
+          <div class="feature-card group p-6 rounded-2xl bg-gradient-to-br from-base-200 to-base-300 border border-base-300 hover:border-secondary/30 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2">
+            <div class="text-3xl mb-4 text-secondary group-hover:scale-110 transition-transform duration-300">
+              <Icon name="lucide:lightbulb" class="w-12 h-12" />
+            </div>
+            <h3 class="text-xl font-bold mb-3">创意实验</h3>
+            <p class="text-base-content/70 leading-relaxed">
+              天马行空的想法，落地为实际项目，探索技术的无限可能 🚀
+            </p>
+          </div>
 
-          <FeatureCard
-            title="MDX Support"
-            description="Write your content in MDX with full support for React components and JSX."
-            icon="lucide:file-code"
-            color="oklch(0.6 0.2 160)"
-          />
-
-          <FeatureCard
-            title="SEO Optimized"
-            description="Built-in SEO optimization with meta tags, OpenGraph, and JSON-LD."
-            icon="lucide:search"
-            color="oklch(0.6 0.2 200)"
-          />
-
-          <FeatureCard
-            title="Fast Performance"
-            description="Optimized for speed with lazy loading, code splitting, and minimal JavaScript."
-            icon="lucide:zap"
-            color="oklch(0.8 0.2 80)"
-          />
-
-          <FeatureCard
-            title="Customizable"
-            description="Easily customize the theme to match your personal brand and preferences."
-            icon="lucide:palette"
-            color="oklch(0.7 0.2 10)"
-          />
-        </div>
-      </section>
-
-      <!-- Quick Start -->
-      <section class="py-6">
-        <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
-          <Icon name="lucide:rocket" class="w-6 h-6 text-primary" />
-          <span>Quick Start</span>
-        </h2>
-
-        <div class="card bg-base-200 p-6">
-          <h3 class="text-xl font-bold mb-4">Get started in three simple steps:</h3>
-
-          <ol class="space-y-6 mb-6">
-            <li class="relative flex flex-col gap-4 items-start">
-              <div class="flex gap-4 items-center">
-                <div
-                  class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-content flex-shrink-0"
-                >
-                  1
-                </div>
-                <h4 class="font-bold">Clone the repository</h4>
-              </div>
-              <div class="relative w-full">
-                <p class="text-base-content/70 mb-2">Use Git to clone the Frosti repository to your local machine:</p>
-                <Code code="git clone --depth 1 https://github.com/EveSunMaple/Frosti.git Frosti" lang="sh" />
-              </div>
-            </li>
-
-            <li class="relative flex flex-col gap-4 items-start">
-              <div class="flex gap-4 items-center">
-                <div
-                  class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-content flex-shrink-0"
-                >
-                  2
-                </div>
-                <h4 class="font-bold">Install dependencies</h4>
-              </div>
-              <div class="relative w-full">
-                <p class="text-base-content/70 mb-2">Navigate to the project directory and install dependencies:</p>
-                <Code code="cd Frosti && npm install" lang="sh" />
-              </div>
-            </li>
-
-            <li class="relative flex flex-col gap-4 items-start">
-              <div class="flex gap-4 items-center">
-                <div
-                  class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-content flex-shrink-0"
-                >
-                  3
-                </div>
-                <h4 class="font-bold">Start the development server</h4>
-              </div>
-              <div class="relative w-full">
-                <p class="text-base-content/70 mb-2">Launch the local development server to see your blog:</p>
-                <Code code="npm run search:index && npm run dev" lang="sh" />
-              </div>
-            </li>
-          </ol>
-
-          <div class="alert bg-primary/10 text-primary mb-0">
-            <Icon name="lucide:lightbulb" class="w-6 h-6" />
-            <span
-              >Check out the <a href="/blog" class="underline">blog section</a> for detailed guides and documentation.</span
-            >
+          <div class="feature-card group p-6 rounded-2xl bg-gradient-to-br from-base-200 to-base-300 border border-base-300 hover:border-accent/30 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2">
+            <div class="text-3xl mb-4 text-accent group-hover:scale-110 transition-transform duration-300">
+              <Icon name="lucide:users" class="w-12 h-12" />
+            </div>
+            <h3 class="text-xl font-bold mb-3">开源贡献</h3>
+            <p class="text-base-content/70 leading-relaxed">
+              分享开源项目，参与社区建设，与技术爱好者共同成长 🌱
+            </p>
           </div>
         </div>
       </section>
 
-      <!-- GitHub Stats -->
-      <section class="py-6">
-        <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
-          <Icon name="lucide:github" class="w-6 h-6 text-primary" />
-          <span>Repository Stats</span>
-        </h2>
+      <!-- GitHub Stats with Enhanced Design -->
+      <section class="py-8">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold mb-3 flex items-center justify-center gap-3">
+            <Icon name="lucide:github" class="w-8 h-8" />
+            <span>项目数据看板</span>
+          </h2>
+        </div>
 
-        <GitHubStats username="EveSunMaple" repositoryName="Frosti" showLanguages={true} showContributors={true} />
+        <div class="bg-gradient-to-br from-base-200 to-base-300 rounded-2xl p-6 border border-base-300 shadow-xl">
+          <GitHubStats 
+            username="lnscq" 
+            repositoryName="Danny-s-blog" 
+            showLanguages={true} 
+            showContributors={true}
+            showStars={true}
+            showForks={true}
+          />
+        </div>
+      </section>
+
+      <!-- Live Status Widget -->
+      <section class="py-8">
+        <h2 class="text-3xl font-bold mb-8 text-center flex items-center justify-center gap-3">
+          <Icon name="lucide:activity" class="w-8 h-8 text-green-500" />
+          <span>实时状态</span>
+        </h2>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="status-widget bg-base-200 rounded-xl p-4 text-center group hover:bg-primary/10 transition-all duration-300">
+            <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">👨‍💻</div>
+            <div class="text-sm text-base-content/60">当前状态</div>
+            <div class="font-bold text-primary">编码中</div>
+          </div>
+          
+          <div class="status-widget bg-base-200 rounded-xl p-4 text-center group hover:bg-secondary/10 transition-all duration-300">
+            <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">☕</div>
+            <div class="text-sm text-base-content/60">今日咖啡</div>
+            <div class="font-bold text-secondary">2杯</div>
+          </div>
+          
+          <div class="status-widget bg-base-200 rounded-xl p-4 text-center group hover:bg-accent/10 transition-all duration-300">
+            <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">🎵</div>
+            <div class="text-sm text-base-content/60">正在播放</div>
+            <div class="font-bold text-accent">Lo-Fi Coding</div>
+          </div>
+          
+          <div class="status-widget bg-base-200 rounded-xl p-4 text-center group hover:bg-green-500/10 transition-all duration-300">
+            <div class="text-2xl mb-2 group-hover:scale-110 transition-transform">🐛</div>
+            <div class="text-sm text-base-content/60">今日BUG</div>
+            <div class="font-bold text-green-500">3个已解决</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Links -->
+      <section class="py-8 text-center">
+        <h2 class="text-2xl font-bold mb-6">快速导航</h2>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="/about" class="btn btn-ghost gap-2 hover:bg-base-200">
+            <Icon name="lucide:user" class="w-4 h-4" />
+            关于我
+          </a>
+          <a href="/contact" class="btn btn-ghost gap-2 hover:bg-base-200">
+            <Icon name="lucide:mail" class="w-4 h-4" />
+            联系我
+          </a>
+          <a href="/blog/categories" class="btn btn-ghost gap-2 hover:bg-base-200">
+            <Icon name="lucide:archive" class="w-4 h-4" />
+            文章归档
+          </a>
+        </div>
       </section>
     </div>
+
+    <style>
+      .animate-gradient {
+        background-size: 200% 200%;
+        animation: gradient 3s ease infinite;
+      }
+      
+      @keyframes gradient {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+      }
+      
+      .feature-card:hover .icon-wrapper {
+        transform: rotateY(180deg);
+      }
+      
+      .btn-shine-effect {
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .btn-shine-effect::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255,255,255,0.1),
+          transparent
+        );
+        transform: rotate(45deg);
+        transition: all 0.6s;
+      }
+      
+      .btn-shine-effect:hover::before {
+        animation: shine 1.5s;
+      }
+      
+      @keyframes shine {
+        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+      }
+    </style>
   </MainCard>
 </BaseLayout>
