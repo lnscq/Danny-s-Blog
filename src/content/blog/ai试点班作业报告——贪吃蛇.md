@@ -2,7 +2,7 @@
 title: "贪吃蛇增强版 - 答辩报告"
 description: "程序设计基础（ai试点班）"
 pubDate: "Oct 14 2025"
-image: https://t.mwm.moe/pc/
+image: https://tc.alcy.cc/q/20250908/efd87a8b4785d763fec204763dd93273.webp
 categories:
   - homework report
 tags:
