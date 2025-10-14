@@ -26,7 +26,7 @@ Project maintainers are responsible for:
 
 If you witness or are subjected to behavior that violates this Code of Conduct, please report it to the project maintainers. You can reach us via:
 
-- **Email**: [evesunmaple@outloook.com]
+- **Email**: [danny_scq@outloook.com]
 - **GitHub Issues**: Create an issue with the label “Code of Conduct” on our repository.
 
 All reports will be reviewed and investigated promptly. Confidentiality will be maintained where possible.
