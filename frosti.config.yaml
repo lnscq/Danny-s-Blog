@@ -35,7 +35,7 @@ site:
           svg: "material-symbols:ink-pen-outline-rounded"
           target: _self
         - id: paper reading
-          text: paper reading
+          text: Paper Reading
           href: /blog/category/Paper%20Reading
           svg: "material-symbols:unknown-document-outline-rounded"
           target: _self

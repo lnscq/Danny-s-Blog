@@ -50,6 +50,8 @@ SpinQuant 的核心是 **在保持模型功能不变的前提下，优化数据�
 
 ### 1. Basic：Rotational Invariance 旋转不变性
 
+![](https://lnscq.github.io/picx-images-hosting/image.5xb2phzfld.webp)
+
 对于 Transformer 中的任何线性层（矩阵乘法）$Y = X W$：
 
 * $X$：输入激活值矩阵。
@@ -99,7 +101,8 @@ $$\arg \min_{R} || \text{Logits}_{\text{FP16}} - \text{Logits}_{\text{Quant}}(R)
 
 ## Part III: Architecture & Deployment
 
-SpinQuant 在 Transformer Pipeline 中设置了四种旋转矩阵
+SpinQuant 在 Transformer Pipeline 中设置了四种旋转矩阵$R_1 R_2 R_3 R_4$
+![](https://lnscq.github.io/picx-images-hosting/image.9gx0faw5tf.webp)
 
 ### 1. 离线可吸收旋转 ($R_1, R_2$)
 
@@ -114,6 +117,8 @@ SpinQuant 在 Transformer Pipeline 中设置了四种旋转矩阵
 
 这些矩阵无法被融合，必须在运行时计算，但它们被强制约束为 **Hadamard 矩阵**，以实现高效计算。
 
+![](https://lnscq.github.io/picx-images-hosting/image.2vf6oa2sgs.webp)
+
 | 矩阵 | 作用位置 | 目的 | 推理机制 | 关键技术 |
 | :--- | :--- | :--- | :--- | :--- |
 | **$R_3$** | **KV Cache 存入前** | 实现 **4-bit KV Cache** 的极致压缩。 | **在线计算 (Online)**。 | **快速 Walsh-Hadamard 变换 (FWHT)**，复杂度 $O(N \log N)$。 |
@@ -122,6 +127,8 @@ SpinQuant 在 Transformer Pipeline 中设置了四种旋转矩阵
 ---
 
 ## Part IV: Results and Conclusion
+
+![](https://lnscq.github.io/picx-images-hosting/image.8dxb4fdcuf.webp)
 
 ### 1. W4A4KV4 极限量化
 
