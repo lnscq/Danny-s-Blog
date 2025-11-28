@@ -4,7 +4,7 @@ description: "11/24-11/30"
 pubDate: "Nov 28 2025"
 image: https://tc.alcy.cc/q/20250908/2230eb3d3c55f8c0065f710a5d135bd6.webp
 categories:
-  - Research
+  - Paper Reading
 tags:
   - PTQ
 ---
