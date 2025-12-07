@@ -15,7 +15,7 @@ tags:
 >[幻觉翻译](https://hjfy.top/arxiv/2305.10601)
 ## Title:**Tree of Thoughts: Deliberate Problem Solving with Large Language Models 树状思维：大型语言模型的深思熟虑问题求解**
 
-
+---
 ### **1. Introduction**
 
 介绍了当前大语言模型（如GPT-4）在推理时仅限于"**从左到右、逐词生成**"的局限性，并将其类比为人类认知中的“系统1”（快速、自动）。受人类“系统2”（慢速、深思熟虑）和早期人工智能“问题求解即搜索”思想的启发，提出了“**思维树**”框架，旨在让模型能够进行探索、前瞻和回溯等更复杂的决策过程。
