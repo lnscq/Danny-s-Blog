@@ -1,8 +1,8 @@
 ---
-title: "Paper Reading Week3"
+title: "Paper Reading Week4"
 description: "12/01-12/07"
 pubDate: "Dec 04 2025"
-image: https://tc.alcy.cc/q/20250908/2230eb3d3c55f8c0065f710a5d135bd6.webp
+image: https://p8.qhimg.com/bdr/__85/t012b0a4dba0add8b86.jpg
 categories:
   - Paper Reading
 tags:

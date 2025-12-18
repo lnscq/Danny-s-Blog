@@ -56,7 +56,7 @@ async function fetchNotoSansSCFonts() {
       const match = cssText.match(blockRe);
       if (!match || match.length === 0)
         return null;
-      const urlMatch = match[0].match(/url\((https:[^)]+)\)/);
+      const urlMatch = match[0].match(/url$(https:[^)]+)$/);
       return urlMatch ? urlMatch[1] : null;
     };
 
