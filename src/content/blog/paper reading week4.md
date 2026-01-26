@@ -2,7 +2,7 @@
 title: "Paper Reading Week4"
 description: "12/01-12/07"
 pubDate: "Dec 04 2025"
-image: https://esa-img.iloli.love/i/pc/img107.webp
+image: https://tc.alcy.cc/tc/20260121/6d60ef1906b6f3733d9a1dc716d90190.webp
 categories:
   - Paper Reading
 tags:

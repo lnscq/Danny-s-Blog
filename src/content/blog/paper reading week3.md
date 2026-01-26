@@ -2,7 +2,7 @@
 title: "Paper Reading Week3"
 description: "11/24-11/30"
 pubDate: "Nov 28 2025"
-image: https://tc.alcy.cc/q/20250908/2230eb3d3c55f8c0065f710a5d135bd6.webp
+image: https://tc.alcy.cc/tc/20260121/6d5b79db33664a98b84dca814c9277a2.webp
 categories:
   - Paper Reading
 tags:

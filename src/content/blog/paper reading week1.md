@@ -2,7 +2,7 @@
 title: "Paper Reading Week1"
 description: "10/11-10/17"
 pubDate: "Oct 13 2025"
-image: https://tc.alcy.cc/q/20250908/ca3053a035cbc492db167dd15acd2cb3.webp
+image: https://tc.alcy.cc/tc/20260121/9c81a447a53f2a84eced18c9a683380e.webp
 categories:
   - Paper Reading
 tags:
