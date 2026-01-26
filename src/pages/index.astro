@@ -1,153 +1,672 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { Icon } from "astro-icon/components";
-import { Code } from "astro-expressive-code/components";
-import MainCard from "@/components/MainCard.astro";
-import FeatureCard from "@/components/mdx/FeatureCard.astro";
 import GitHubStats from "@/components/mdx/GitHubStats.astro";
 ---
 
 <BaseLayout title="Home">
-  <MainCard
-    title="欢迎访问Danny's Blog"
-    description="欢迎大家来玩喵~🐱"
-    textOverlay="DANNY'S SPACE"
-    infoIcon="lucide:sparkles"
-  >
-    <div class="space-y-12">
-      <!-- Hero Section with Animation -->
-      <section class="py-8">
-        <div class="flex flex-col items-center text-center">
-          <!-- Animated Avatar -->
-          <div class="relative mb-6">
-            <div class="w-24 h-24 rounded-full bg-gradient-to-r from-primary to-secondary p-1 animate-pulse">
-              <div class="w-full h-full rounded-full bg-base-100 flex items-center justify-center">
-                <span class="text-2xl">🐶</span>
-              </div>
+  <main class="page-wrap">
+    <!-- Top Profile -->
+    <section class="container">
+      <div class="top-grid">
+        <div class="profile glass">
+          <div class="avatar-wrap">
+            <img
+              class="avatar"
+              src="/head.jpg"
+              alt="avatar"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="profile-meta">
+            <h1 class="name">Danny</h1>
+
+            <div class="chips">
+              <a class="chip" href="#" aria-label="Location">
+                <Icon name="lucide:map-pin" class="ico" />
+                <span>China</span>
+              </a>
+              <a class="chip" href="https://github.com/lnscq" target="_blank" aria-label="GitHub">
+                <Icon name="lucide:github" class="ico" />
+                <span>GitHub</span>
+              </a>
+              <a class="chip" href="/contact" aria-label="Email">
+                <Icon name="lucide:mail" class="ico" />
+                <span>Email</span>
+              </a>
+              <a class="chip" href="https://openreview.net/profile?id=%7EChengqi_Shi1" aria-label="Scholar">
+                <Icon name="lucide:graduation-cap" class="ico" />
+                <span>Scholar</span>
+              </a>
             </div>
-            <div class="absolute -top-2 -right-2 w-6 h-6 bg-accent rounded-full flex items-center justify-center">
-              <span class="text-xs">✨</span>
+
+            <div class="headline">
+              <span class="badge">学生</span>
+              <span class="sep">/</span>
+              <span class="motto">Cogito, ergo sum.</span>
+            </div>
+
+            <p class="about">
+              我是西安交通大学在读学生，关注具身智能与 manipulation 等方向。
+              Feel free to contact me.
+            </p>
+
+            <div class="cta-row">
+              <a class="btn primary" href="/blog">
+                <Icon name="lucide:book-open" class="ico" />
+                <span>Blog</span>
+                <Icon name="lucide:arrow-right" class="ico-sm" />
+              </a>
+              <a class="btn ghost" href="/about">
+                <Icon name="lucide:user" class="ico" />
+                <span>More about me</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Quick Stats / Highlights -->
+        <div class="right-stack">
+          <div class="glass card">
+            <div class="card-title">
+              <Icon name="lucide:sparkles" class="ico" />
+              <span>Quick Links</span>
+            </div>
+            <div class="quick-links">
+              <a class="ql" href="/about">
+                <Icon name="lucide:user" class="ico" />
+                <span>关于我</span>
+              </a>
+              <a class="ql" href="/blog/categories">
+                <Icon name="lucide:archive" class="ico" />
+                <span>文章归档</span>
+              </a>
+              <a class="ql" href="/contact">
+                <Icon name="lucide:mail" class="ico" />
+                <span>联系我</span>
+              </a>
             </div>
           </div>
 
-          <h1 class="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent leading-tight animate-gradient">
-            Danny's Blog
-          </h1>
-          <p class="text-xl text-base-content/80 max-w-3xl mb-8 leading-relaxed mt-8">
-            Cogito, ergo sum.
-          </p>
-          
-          <!-- Animated CTA Buttons -->
-          <div class="flex flex-wrap gap-4 justify-center mb-8">
-            <a href="/blog" class="btn btn-primary gap-3 px-8 py-4 text-lg font-semibold transform hover:scale-105 transition-all duration-300 btn-shine-effect group flex items-center">
-              <Icon name="lucide:book-open" class="w-6 h-6 group-hover:animate-bounce" />
-              <span class="leading-none">探索博客</span>
-              <Icon name="lucide:arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </a>
-            <a href="https://github.com/lnscq?tab=repositories" target="_blank" class="btn btn-outline gap-3 px-8 py-4 text-lg font-semibold border-2 hover:border-primary hover:bg-primary/10 transition-all duration-300 group flex items-center">
-              <Icon name="lucide:rocket" class="w-6 h-6 group-hover:animate-pulse" />
-              <span class="leading-none">我的项目</span>
-            </a>
-          </div>
-
-          <!-- Floating Elements -->
-          <div class="flex gap-6 mt-4">
-            <div class="flex items-center gap-2 text-sm text-base-content/60">
-              <div class="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
+          <div class="glass card">
+            <div class="card-title">
+              <Icon name="lucide:activity" class="ico" />
+              <span>Status</span>
+            </div>
+            <div class="status">
+              <span class="dot"></span>
               <span>在线摸鱼中</span>
             </div>
+            <p class="muted">
+              主页风格：Dark / Glass / Card-based
+            </p>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
+    <!-- About -->
+    <section class="container section">
+      <div class="section-head">
+        <h2>About</h2>
+      </div>
 
-      <!-- GitHub Stats with Enhanced Design -->
-      <section class="py-8">
-        <div class="text-center mb-8">
-          <h2 class="text-3xl font-bold mb-3 flex items-center justify-center gap-3">
-            <Icon name="lucide:github" class="w-8 h-8" />
-            <span>项目数据看板</span>
-          </h2>
+      <div class="glass section-card">
+        <p class="section-text">
+          我在持续做一些工程与研究型项目：机器人/具身智能、视觉检测与推理加速、生成式模型等。
+          这里会放项目记录、实验笔记与随手写的东西。
+        </p>
+      </div>
+    </section>
+
+    <!-- Education -->
+    <section class="container section">
+      <div class="section-head">
+        <h2>Education</h2>
+      </div>
+
+      <div class="edu-grid">
+        <div class="glass edu-card">
+          <div class="edu-top">
+            <div class="edu-title">西安交通大学</div>
+            <div class="edu-role">少年班</div>
+          </div>
+          <div class="edu-time">2023 – 2025</div>
         </div>
 
-        <div class="bg-gradient-to-br from-base-200 to-base-300 rounded-2xl p-6 border border-base-300 shadow-xl">
-          <GitHubStats 
-            username="lnscq" 
-            repositoryName="Danny-s-blog" 
-            showLanguages={true} 
-            showContributors={true}
-            showStars={true}
-            showForks={true}
-          />
+        <div class="glass edu-card">
+          <div class="edu-top">
+            <div class="edu-title">西安交通大学</div>
+            <div class="edu-role">计算机科学与技术</div>
+          </div>
+          <div class="edu-time">2025 – present</div>
         </div>
-      </section>
+      </div>
+    </section>
 
+    <!-- GitHub Dashboard -->
+    <section class="container section">
+      <div class="section-head">
+        <h2 class="row">
+          <Icon name="lucide:github" class="ico" />
+          <span>项目数据看板</span>
+        </h2>
+      </div>
 
-      <!-- Quick Links -->
-      <section class="py-8 text-center">
-        <h2 class="text-2xl font-bold mb-6">快速导航</h2>
-        <div class="flex flex-wrap justify-center gap-4">
-          <a href="/about" class="btn btn-ghost gap-2 hover:bg-base-200">
-            <Icon name="lucide:user" class="w-4 h-4" />
-            关于我
-          </a>
-          <a href="/contact" class="btn btn-ghost gap-2 hover:bg-base-200">
-            <Icon name="lucide:mail" class="w-4 h-4" />
-            联系我
-          </a>
-          <a href="/blog/categories" class="btn btn-ghost gap-2 hover:bg-base-200">
-            <Icon name="lucide:archive" class="w-4 h-4" />
-            文章归档
-          </a>
+      <div class="glass dash">
+        <GitHubStats
+          username="lnscq"
+          repositoryName="Danny-s-blog"
+          showLanguages={true}
+          showContributors={true}
+          showStars={true}
+          showForks={true}
+        />
+      </div>
+    </section>
+
+    <!-- Featured Song (Random Beatles Embed) -->
+    <section class="container section">
+      <h2 class="text-2xl font-bold mb-6 flex items-center justify-between gap-2">
+        <span class="flex items-center gap-2">
+          <Icon name="lucide:music" class="w-6 h-6 text-primary" />
+          <span>Featured Song · The Beatles</span>
+        </span>
+
+        <span class="text-sm text-base-content/60">
+          更新时间 / Updated 
+          <span class="font-medium" id="song-updated"></span>
+        </span>
+      </h2>
+
+      <script is:inline>
+        // 1) 更新时间（UTC+8）
+        const el = document.getElementById("song-updated");
+        if (el) {
+          const s = new Intl.DateTimeFormat("zh-CN", {
+            timeZone: "Asia/Shanghai",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          }).format(new Date());
+          el.textContent = s;
+        }
+
+        // 2) 刷新随机一首披头士（embed + 文案 + 外链）
+        // 你可以在这里继续加更多曲目：embed 用 Apple Music 的 embed 链接
+        const BEATLES_EMBEDS = [
+          {
+            songName: "Hey Jude",
+            artist: "The Beatles",
+            note: "刷新会随机一首 / Random on refresh",
+            appleMusicLink: "https://music.apple.com/cn/song/hey-jude/1441164426",
+            // 常用做法：用包含该曲目的专辑/合辑 embed（单曲 embed 并不总是稳定）
+            embedUrl: "https://embed.music.apple.com/cn/album/1/1441133180",
+          },
+          {
+            songName: "Let It Be",
+            artist: "The Beatles",
+            note: "刷新会随机一首 / Random on refresh",
+            appleMusicLink: "https://music.apple.com/cn/song/let-it-be/1441164524",
+            embedUrl: "https://embed.music.apple.com/cn/album/let-it-be/1441164495",
+          },
+          {
+            songName: "Yesterday",
+            artist: "The Beatles",
+            note: "刷新会随机一首 / Random on refresh",
+            appleMusicLink: "https://music.apple.com/cn/song/yesterday/1441164517",
+            embedUrl: "https://embed.music.apple.com/cn/album/help/1441164449",
+          },
+          {
+            songName: "Come Together",
+            artist: "The Beatles",
+            note: "刷新会随机一首 / Random on refresh",
+            appleMusicLink: "https://music.apple.com/cn/song/come-together/1441164359",
+            embedUrl: "https://embed.music.apple.com/cn/album/abbey-road/1441164424",
+          },
+          {
+            songName: "Here Comes the Sun",
+            artist: "The Beatles",
+            note: "刷新会随机一首 / Random on refresh",
+            appleMusicLink: "https://music.apple.com/cn/song/here-comes-the-sun/1441164365",
+            embedUrl: "https://embed.music.apple.com/cn/album/abbey-road/1441164424",
+          },
+        ];
+
+        function pickOne(list) {
+          return list[Math.floor(Math.random() * list.length)];
+        }
+
+        const picked = pickOne(BEATLES_EMBEDS);
+
+        const noteEl = document.getElementById("featured-note");
+        const songEl = document.getElementById("featured-song");
+        const artistEl = document.getElementById("featured-artist");
+        const linkEl = document.getElementById("featured-link");
+        const frameEl = document.getElementById("featured-iframe");
+
+        if (noteEl) noteEl.textContent = picked.note;
+        if (songEl) songEl.textContent = picked.songName;
+        if (artistEl) artistEl.textContent = picked.artist;
+
+        if (linkEl) linkEl.setAttribute("href", picked.appleMusicLink);
+        if (frameEl) frameEl.setAttribute("src", picked.embedUrl);
+      </script>
+
+      <div class="card bg-base-200 p-6 shadow-md">
+        <div class="flex flex-col gap-4">
+          <!-- Text row -->
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <p class="text-sm text-base-content/60" id="featured-note">
+                刷新会随机一首 / Random on refresh
+              </p>
+              <h3 class="text-xl font-bold leading-snug" id="featured-song">
+                The Beatles
+              </h3>
+              <p class="text-base-content/70" id="featured-artist">
+                The Beatles
+              </p>
+            </div>
+
+            <a
+              class="btn btn-primary gap-2"
+              id="featured-link"
+              href="https://music.apple.com/cn/artist/the-beatles/136975"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Icon name="lucide:external-link" class="w-5 h-5" />
+              <span>在 Apple Music 上打开</span>
+            </a>
+          </div>
+
+          <!-- Player -->
+          <div class="bg-base-100/60 rounded-xl p-3">
+            <iframe
+              id="featured-iframe"
+              title="Apple Music Player"
+              allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
+              frameborder="0"
+              height="175"
+              style="width:100%; max-width:100%; overflow:hidden; border-radius:12px;"
+              sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
+              src="https://embed.music.apple.com/cn/album/1/1441133180"
+            ></iframe>
+
+            <div class="alert bg-base-100/60 mt-3">
+              <Icon name="lucide:info" class="w-5 h-5" />
+              <span class="text-sm">
+                提示：稍等一会链接即可呈现~多数浏览器不允许“自动播放有声音的音乐”，需要你先点一次播放键。
+              </span>
+            </div>
+          </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
 
-    <style>
-      .animate-gradient {
-        background-size: 200% 200%;
-        animation: gradient 3s ease infinite;
-      }
-      
-      @keyframes gradient {
-        0%, 100% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-      }
-      
-      .feature-card:hover .icon-wrapper {
-        transform: rotateY(180deg);
-      }
-      
-      .btn-shine-effect {
-        position: relative;
-        overflow: hidden;
-      }
-      
-      .btn-shine-effect::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(
-          45deg,
-          transparent,
-          rgba(255,255,255,0.1),
-          transparent
-        );
-        transform: rotate(45deg);
-        transition: all 0.6s;
-      }
-      
-      .btn-shine-effect:hover::before {
-        animation: shine 1.5s;
-      }
-      
-      @keyframes shine {
-        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-      }
-    </style>
-  </MainCard>
+    <footer class="container foot muted">
+      <span>© {new Date().getFullYear()} Danny</span>
+    </footer>
+  </main>
+
+  <style>
+    :global(html[data-theme-type="dark"]) {
+      --page-bg: radial-gradient(1200px 600px at 20% 10%, rgba(80, 120, 255, 0.18), transparent 60%),
+                 radial-gradient(900px 500px at 80% 30%, rgba(80, 255, 200, 0.10), transparent 55%),
+                 radial-gradient(1000px 700px at 40% 110%, rgba(160, 90, 255, 0.10), transparent 60%),
+                 #070a10;
+      --page-text: rgba(255, 255, 255, 0.92);
+      --glass-bg: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+      --glass-border: rgba(255,255,255,0.10);
+      --glass-shadow: 0 18px 60px rgba(0,0,0,0.35);
+      --chip-bg: rgba(0,0,0,0.22);
+      --chip-border: rgba(255,255,255,0.10);
+      --chip-text: rgba(255,255,255,0.86);
+      --chip-bg-hover: rgba(0,0,0,0.30);
+      --chip-border-hover: rgba(255,255,255,0.16);
+      --headline: rgba(255,255,255,0.78);
+      --badge-bg: rgba(255,255,255,0.08);
+      --badge-border: rgba(255,255,255,0.10);
+      --about-text: rgba(255,255,255,0.78);
+      --btn-bg: rgba(0,0,0,0.18);
+      --btn-border: rgba(255,255,255,0.12);
+      --btn-bg-hover: rgba(0,0,0,0.28);
+      --btn-border-hover: rgba(255,255,255,0.18);
+      --btn-primary-bg: linear-gradient(135deg, rgba(120,160,255,0.26), rgba(80,255,200,0.12));
+      --btn-primary-border: rgba(120,160,255,0.25);
+      --btn-primary-bg-hover: linear-gradient(135deg, rgba(120,160,255,0.34), rgba(80,255,200,0.16));
+      --btn-ghost-bg: rgba(255,255,255,0.06);
+      --card-title: rgba(255,255,255,0.88);
+      --ql-bg: rgba(0,0,0,0.18);
+      --ql-border: rgba(255,255,255,0.10);
+      --ql-bg-hover: rgba(0,0,0,0.28);
+      --ql-border-hover: rgba(255,255,255,0.16);
+      --status-text: rgba(255,255,255,0.86);
+      --dot-bg: rgba(60, 255, 150, 0.95);
+      --dot-shadow: 0 0 0 6px rgba(60,255,150,0.10);
+      --muted: rgba(255,255,255,0.60);
+      --section-title: rgba(255,255,255,0.90);
+      --section-text: rgba(255,255,255,0.75);
+      --avatar-border: rgba(255,255,255,0.12);
+      --avatar-bg: rgba(255,255,255,0.04);
+      --edu-title: rgba(255,255,255,0.90);
+      --edu-role: rgba(255,255,255,0.70);
+      --edu-time: rgba(255,255,255,0.60);
+      --foot-border: rgba(255,255,255,0.10);
+    }
+
+    :global(html[data-theme-type="light"]) {
+      --page-bg: radial-gradient(1200px 600px at 10% 0%, rgba(90, 120, 255, 0.18), transparent 60%),
+                 radial-gradient(900px 500px at 90% 20%, rgba(80, 200, 190, 0.18), transparent 55%),
+                 radial-gradient(1000px 700px at 30% 110%, rgba(180, 200, 255, 0.18), transparent 60%),
+                 #f5f7fb;
+      --page-text: #0f172a;
+      --glass-bg: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(245,248,255,0.70));
+      --glass-border: rgba(15,23,42,0.08);
+      --glass-shadow: 0 20px 50px rgba(15,23,42,0.12);
+      --chip-bg: rgba(255,255,255,0.70);
+      --chip-border: rgba(15,23,42,0.10);
+      --chip-text: rgba(15,23,42,0.78);
+      --chip-bg-hover: rgba(255,255,255,0.95);
+      --chip-border-hover: rgba(15,23,42,0.18);
+      --headline: rgba(15,23,42,0.65);
+      --badge-bg: rgba(15,23,42,0.06);
+      --badge-border: rgba(15,23,42,0.10);
+      --about-text: rgba(15,23,42,0.72);
+      --btn-bg: rgba(255,255,255,0.72);
+      --btn-border: rgba(15,23,42,0.10);
+      --btn-bg-hover: rgba(255,255,255,0.95);
+      --btn-border-hover: rgba(15,23,42,0.20);
+      --btn-primary-bg: linear-gradient(135deg, rgba(102,140,255,0.30), rgba(82,205,185,0.25));
+      --btn-primary-border: rgba(102,140,255,0.35);
+      --btn-primary-bg-hover: linear-gradient(135deg, rgba(102,140,255,0.40), rgba(82,205,185,0.30));
+      --btn-ghost-bg: rgba(15,23,42,0.04);
+      --card-title: rgba(15,23,42,0.85);
+      --ql-bg: rgba(255,255,255,0.72);
+      --ql-border: rgba(15,23,42,0.10);
+      --ql-bg-hover: rgba(255,255,255,0.98);
+      --ql-border-hover: rgba(15,23,42,0.22);
+      --status-text: rgba(15,23,42,0.80);
+      --dot-bg: rgba(30, 180, 120, 0.90);
+      --dot-shadow: 0 0 0 6px rgba(30,180,120,0.15);
+      --muted: rgba(15,23,42,0.60);
+      --section-title: rgba(15,23,42,0.88);
+      --section-text: rgba(15,23,42,0.70);
+      --avatar-border: rgba(15,23,42,0.10);
+      --avatar-bg: rgba(255,255,255,0.85);
+      --edu-title: rgba(15,23,42,0.90);
+      --edu-role: rgba(15,23,42,0.65);
+      --edu-time: rgba(15,23,42,0.55);
+      --foot-border: rgba(15,23,42,0.10);
+    }
+
+    :global(body) {
+      background: var(--page-bg);
+    }
+
+    .page-wrap {
+      min-height: 100vh;
+      padding: 40px 0 56px;
+      color: var(--page-text);
+    }
+
+    .container {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .section { margin-top: 26px; }
+
+    .glass {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 18px;
+    }
+
+    .top-grid {
+      display: grid;
+      grid-template-columns: 1.55fr 0.85fr;
+      gap: 18px;
+      align-items: start;
+    }
+    @media (max-width: 920px) {
+      .top-grid { grid-template-columns: 1fr; }
+    }
+
+    .profile {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 18px;
+      padding: 18px;
+    }
+    @media (max-width: 560px) {
+      .profile { grid-template-columns: 1fr; }
+    }
+
+    .avatar-wrap {
+      width: 120px;
+      height: 120px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--avatar-border);
+      background: var(--avatar-bg);
+      display: grid;
+      place-items: center;
+    }
+    .avatar {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.95;
+    }
+
+    .profile-meta { padding-top: 2px; }
+
+    .name {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      margin: 0 0 10px 0;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--chip-border);
+      background: var(--chip-bg);
+      color: var(--chip-text);
+      text-decoration: none;
+      transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+    }
+    .chip:hover {
+      transform: translateY(-1px);
+      border-color: var(--chip-border-hover);
+      background: var(--chip-bg-hover);
+    }
+
+    .headline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 6px 0 10px;
+      color: var(--headline);
+    }
+    .badge {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--badge-bg);
+      border: 1px solid var(--badge-border);
+    }
+    .sep { opacity: 0.45; }
+    .motto { opacity: 0.88; }
+
+    .about {
+      margin: 0;
+      line-height: 1.65;
+      color: var(--about-text);
+      max-width: 64ch;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--btn-border);
+      text-decoration: none;
+      color: var(--page-text);
+      background: var(--btn-bg);
+      transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+      background: var(--btn-bg-hover);
+      border-color: var(--btn-border-hover);
+    }
+    .btn.primary {
+      background: var(--btn-primary-bg);
+      border-color: var(--btn-primary-border);
+    }
+    .btn.primary:hover {
+      background: var(--btn-primary-bg-hover);
+    }
+    .btn.ghost {
+      background: var(--btn-ghost-bg);
+    }
+
+    .ico { width: 18px; height: 18px; }
+    .ico-sm { width: 16px; height: 16px; opacity: 0.9; }
+
+    .right-stack { display: grid; gap: 18px; }
+    .card { padding: 16px; }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: var(--card-title);
+    }
+
+    .quick-links { display: grid; gap: 10px; }
+    .ql {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--ql-border);
+      background: var(--ql-bg);
+      text-decoration: none;
+      color: var(--page-text);
+    }
+    .ql:hover {
+      background: var(--ql-bg-hover);
+      border-color: var(--ql-border-hover);
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+      color: var(--status-text);
+      font-weight: 650;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--dot-bg);
+      box-shadow: var(--dot-shadow);
+    }
+
+    .muted { color: var(--muted); }
+
+    .section-head h2 {
+      margin: 0 0 12px 0;
+      font-size: 22px;
+      font-weight: 850;
+      color: var(--section-title);
+      letter-spacing: 0.2px;
+    }
+    .section-head .row {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-card { padding: 16px; }
+    .section-text { margin: 0; line-height: 1.8; color: var(--section-text); }
+
+    .edu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 720px) {
+      .edu-grid { grid-template-columns: 1fr; }
+    }
+
+    .edu-card { padding: 16px; }
+    .edu-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+    }
+    .edu-title {
+      font-weight: 900;
+      font-size: 18px;
+      color: var(--edu-title);
+    }
+    .edu-role {
+      font-weight: 650;
+      color: var(--edu-role);
+    }
+    .edu-time {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--edu-time);
+    }
+
+    .dash { padding: 16px; }
+
+    .foot {
+      margin-top: 28px;
+      padding-top: 14px;
+      border-top: 1px solid var(--foot-border);
+      text-align: center;
+    }
+  </style>
 </BaseLayout>

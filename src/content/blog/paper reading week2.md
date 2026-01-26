@@ -2,7 +2,7 @@
 title: "Paper Reading Week2"
 description: "10/27-11/03"
 pubDate: "Oct 29 2025"
-image: https://tc.alcy.cc/q/20250908/55b5c637868669f2900ac105bcf22d7b.webp
+image: https://tc.alcy.cc/tc/20260124/aed46c899aa2c9f86a422a3457491d6a.webp
 categories:
   - Paper Reading
 tags:

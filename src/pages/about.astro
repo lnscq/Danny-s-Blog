@@ -68,21 +68,35 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
         </h2>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {
-            [
-              { name: "Git", icon: "simple-icons:git", color: "oklch(0.7 0.2 30)" },
-              { name: "C++", icon: "simple-icons:cplusplus", color: "oklch(0.6 0.2 240)" },
-              { name: "Python", icon: "simple-icons:python", color: "oklch(0.7 0.2 250)" },
-            ].map((tech) => (
-              <div class="flex flex-col items-center justify-center p-4 bg-base-200 rounded-lg hover:bg-base-300 transition-colors">
-                <div class="text-3xl mb-2" style={`color: ${tech.color}`}>
-                  <Icon name={tech.icon} class="w-10 h-10" />
-                </div>
-                <span class="text-sm font-medium">{tech.name}</span>
-              </div>
-            ))
-          }
+  {
+    [
+      // ===== 基础 / 工具 =====
+      { name: "Git", icon: "simple-icons:git", color: "oklch(0.7 0.2 30)" },
+      { name: "C++", icon: "simple-icons:cplusplus", color: "oklch(0.6 0.2 240)" },
+      { name: "Python", icon: "simple-icons:python", color: "oklch(0.7 0.2 250)" },
+
+      // ===== 系统 / 环境 =====
+      { name: "Linux", icon: "simple-icons:linux", color: "oklch(0.7 0.2 110)" },
+      { name: "Ubuntu", icon: "simple-icons:ubuntu", color: "oklch(0.7 0.2 40)" },
+
+      // ===== 视觉 / AI / 工程 =====
+      { name: "OpenCV", icon: "simple-icons:opencv", color: "oklch(0.65 0.22 260)" },
+      { name: "PyTorch", icon: "simple-icons:pytorch", color: "oklch(0.7 0.25 25)" },
+
+      // ===== Web / 博客技术栈 =====
+      { name: "Astro", icon: "simple-icons:astro", color: "oklch(0.75 0.25 290)" },
+      { name: "TypeScript", icon: "simple-icons:typescript", color: "oklch(0.7 0.2 250)" },
+    ].map((tech) => (
+      <div class="flex flex-col items-center justify-center p-4 bg-base-200 rounded-lg hover:bg-base-300 transition-colors">
+        <div class="text-3xl mb-2" style={`color: ${tech.color}`}>
+          <Icon name={tech.icon} class="w-10 h-10" />
         </div>
+        <span class="text-sm font-medium">{tech.name}</span>
+      </div>
+    ))
+  }
+</div>
+
       </section>
 
       <!-- 贡献活动 -->
@@ -97,9 +111,9 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
             {
               [
                 {
-                  date: "2025年10月",
-                  title: "计算机2501博客搭建",
-                  desc: "主持构建并维护西安交通大学计算机2501班的班级互助博客",
+                  date: "2026年1月",
+                  title: "Robocup冬训",
+                  desc: "某先进视觉赛——3D检测，担任队长负责整体项目规划与部分代码编写。",
                 },
               ].map((item, i) => (
                 <div class="relative flex gap-4 pb-2 md:pb-0 md:min-w-[250px]">
