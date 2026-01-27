@@ -11,12 +11,7 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       <div class="top-grid">
         <div class="profile glass">
           <div class="avatar-wrap">
-            <img
-              class="avatar"
-              src="/head.jpg"
-              alt="avatar"
-              loading="lazy"
-            />
+            <img class="avatar" src="/head.jpg" alt="avatar" loading="lazy" />
           </div>
 
           <div class="profile-meta">
@@ -96,11 +91,8 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
             </div>
             <div class="status">
               <span class="dot"></span>
-              <span>在线摸鱼中</span>
+              <span>放寒假中...</span>
             </div>
-            <p class="muted">
-              主页风格：Dark / Glass / Card-based
-            </p>
           </div>
         </div>
       </div>
@@ -129,7 +121,11 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       <div class="edu-grid">
         <div class="glass edu-card">
           <div class="edu-top">
-            <div class="edu-title">西安交通大学</div>
+            <div class="edu-title">
+              <a href="https://bjb.xjtu.edu.cn/info/1071/1237.htm" target="_blank" rel="noopener noreferrer">
+                西安交通大学
+              </a>
+            </div>
             <div class="edu-role">少年班</div>
           </div>
           <div class="edu-time">2023 – 2025</div>
@@ -137,7 +133,9 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
 
         <div class="glass edu-card">
           <div class="edu-top">
-            <div class="edu-title">西安交通大学</div>
+            <div class="edu-title">
+              <a href="http://www.cs.xjtu.edu.cn/" target="_blank" rel="noopener noreferrer"> 西安交通大学 </a>
+            </div>
             <div class="edu-role">计算机科学与技术</div>
           </div>
           <div class="edu-time">2025 – present</div>
@@ -175,7 +173,7 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
         </span>
 
         <span class="text-sm text-base-content/60">
-          更新时间 / Updated 
+          更新时间 / Updated
           <span class="font-medium" id="song-updated"></span>
         </span>
       </h2>
@@ -262,15 +260,9 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
           <!-- Text row -->
           <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <p class="text-sm text-base-content/60" id="featured-note">
-                刷新会随机一首 / Random on refresh
-              </p>
-              <h3 class="text-xl font-bold leading-snug" id="featured-song">
-                The Beatles
-              </h3>
-              <p class="text-base-content/70" id="featured-artist">
-                The Beatles
-              </p>
+              <p class="text-sm text-base-content/60" id="featured-note">刷新会随机一首 / Random on refresh</p>
+              <h3 class="text-xl font-bold leading-snug" id="featured-song">The Beatles</h3>
+              <p class="text-base-content/70" id="featured-artist">The Beatles</p>
             </div>
 
             <a
@@ -295,8 +287,7 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
               height="175"
               style="width:100%; max-width:100%; overflow:hidden; border-radius:12px;"
               sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
-              src="https://embed.music.apple.com/cn/album/1/1441133180"
-            ></iframe>
+              src="https://embed.music.apple.com/cn/album/1/1441133180"></iframe>
 
             <div class="alert bg-base-100/60 mt-3">
               <Icon name="lucide:info" class="w-5 h-5" />
@@ -316,93 +307,93 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
 
   <style>
     :global(html[data-theme-type="dark"]) {
-      --page-bg: radial-gradient(1200px 600px at 20% 10%, rgba(80, 120, 255, 0.18), transparent 60%),
-                 radial-gradient(900px 500px at 80% 30%, rgba(80, 255, 200, 0.10), transparent 55%),
-                 radial-gradient(1000px 700px at 40% 110%, rgba(160, 90, 255, 0.10), transparent 60%),
-                 #070a10;
+      --page-bg:
+        radial-gradient(1200px 600px at 20% 10%, rgba(80, 120, 255, 0.18), transparent 60%),
+        radial-gradient(900px 500px at 80% 30%, rgba(80, 255, 200, 0.1), transparent 55%),
+        radial-gradient(1000px 700px at 40% 110%, rgba(160, 90, 255, 0.1), transparent 60%), #070a10;
       --page-text: rgba(255, 255, 255, 0.92);
-      --glass-bg: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
-      --glass-border: rgba(255,255,255,0.10);
-      --glass-shadow: 0 18px 60px rgba(0,0,0,0.35);
-      --chip-bg: rgba(0,0,0,0.22);
-      --chip-border: rgba(255,255,255,0.10);
-      --chip-text: rgba(255,255,255,0.86);
-      --chip-bg-hover: rgba(0,0,0,0.30);
-      --chip-border-hover: rgba(255,255,255,0.16);
-      --headline: rgba(255,255,255,0.78);
-      --badge-bg: rgba(255,255,255,0.08);
-      --badge-border: rgba(255,255,255,0.10);
-      --about-text: rgba(255,255,255,0.78);
-      --btn-bg: rgba(0,0,0,0.18);
-      --btn-border: rgba(255,255,255,0.12);
-      --btn-bg-hover: rgba(0,0,0,0.28);
-      --btn-border-hover: rgba(255,255,255,0.18);
-      --btn-primary-bg: linear-gradient(135deg, rgba(120,160,255,0.26), rgba(80,255,200,0.12));
-      --btn-primary-border: rgba(120,160,255,0.25);
-      --btn-primary-bg-hover: linear-gradient(135deg, rgba(120,160,255,0.34), rgba(80,255,200,0.16));
-      --btn-ghost-bg: rgba(255,255,255,0.06);
-      --card-title: rgba(255,255,255,0.88);
-      --ql-bg: rgba(0,0,0,0.18);
-      --ql-border: rgba(255,255,255,0.10);
-      --ql-bg-hover: rgba(0,0,0,0.28);
-      --ql-border-hover: rgba(255,255,255,0.16);
-      --status-text: rgba(255,255,255,0.86);
+      --glass-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --glass-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+      --chip-bg: rgba(0, 0, 0, 0.22);
+      --chip-border: rgba(255, 255, 255, 0.1);
+      --chip-text: rgba(255, 255, 255, 0.86);
+      --chip-bg-hover: rgba(0, 0, 0, 0.3);
+      --chip-border-hover: rgba(255, 255, 255, 0.16);
+      --headline: rgba(255, 255, 255, 0.78);
+      --badge-bg: rgba(255, 255, 255, 0.08);
+      --badge-border: rgba(255, 255, 255, 0.1);
+      --about-text: rgba(255, 255, 255, 0.78);
+      --btn-bg: rgba(0, 0, 0, 0.18);
+      --btn-border: rgba(255, 255, 255, 0.12);
+      --btn-bg-hover: rgba(0, 0, 0, 0.28);
+      --btn-border-hover: rgba(255, 255, 255, 0.18);
+      --btn-primary-bg: linear-gradient(135deg, rgba(120, 160, 255, 0.26), rgba(80, 255, 200, 0.12));
+      --btn-primary-border: rgba(120, 160, 255, 0.25);
+      --btn-primary-bg-hover: linear-gradient(135deg, rgba(120, 160, 255, 0.34), rgba(80, 255, 200, 0.16));
+      --btn-ghost-bg: rgba(255, 255, 255, 0.06);
+      --card-title: rgba(255, 255, 255, 0.88);
+      --ql-bg: rgba(0, 0, 0, 0.18);
+      --ql-border: rgba(255, 255, 255, 0.1);
+      --ql-bg-hover: rgba(0, 0, 0, 0.28);
+      --ql-border-hover: rgba(255, 255, 255, 0.16);
+      --status-text: rgba(255, 255, 255, 0.86);
       --dot-bg: rgba(60, 255, 150, 0.95);
-      --dot-shadow: 0 0 0 6px rgba(60,255,150,0.10);
-      --muted: rgba(255,255,255,0.60);
-      --section-title: rgba(255,255,255,0.90);
-      --section-text: rgba(255,255,255,0.75);
-      --avatar-border: rgba(255,255,255,0.12);
-      --avatar-bg: rgba(255,255,255,0.04);
-      --edu-title: rgba(255,255,255,0.90);
-      --edu-role: rgba(255,255,255,0.70);
-      --edu-time: rgba(255,255,255,0.60);
-      --foot-border: rgba(255,255,255,0.10);
+      --dot-shadow: 0 0 0 6px rgba(60, 255, 150, 0.1);
+      --muted: rgba(255, 255, 255, 0.6);
+      --section-title: rgba(255, 255, 255, 0.9);
+      --section-text: rgba(255, 255, 255, 0.75);
+      --avatar-border: rgba(255, 255, 255, 0.12);
+      --avatar-bg: rgba(255, 255, 255, 0.04);
+      --edu-title: rgba(255, 255, 255, 0.9);
+      --edu-role: rgba(255, 255, 255, 0.7);
+      --edu-time: rgba(255, 255, 255, 0.6);
+      --foot-border: rgba(255, 255, 255, 0.1);
     }
 
     :global(html[data-theme-type="light"]) {
-      --page-bg: radial-gradient(1200px 600px at 10% 0%, rgba(90, 120, 255, 0.18), transparent 60%),
-                 radial-gradient(900px 500px at 90% 20%, rgba(80, 200, 190, 0.18), transparent 55%),
-                 radial-gradient(1000px 700px at 30% 110%, rgba(180, 200, 255, 0.18), transparent 60%),
-                 #f5f7fb;
+      --page-bg:
+        radial-gradient(1200px 600px at 10% 0%, rgba(90, 120, 255, 0.18), transparent 60%),
+        radial-gradient(900px 500px at 90% 20%, rgba(80, 200, 190, 0.18), transparent 55%),
+        radial-gradient(1000px 700px at 30% 110%, rgba(180, 200, 255, 0.18), transparent 60%), #f5f7fb;
       --page-text: #0f172a;
-      --glass-bg: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(245,248,255,0.70));
-      --glass-border: rgba(15,23,42,0.08);
-      --glass-shadow: 0 20px 50px rgba(15,23,42,0.12);
-      --chip-bg: rgba(255,255,255,0.70);
-      --chip-border: rgba(15,23,42,0.10);
-      --chip-text: rgba(15,23,42,0.78);
-      --chip-bg-hover: rgba(255,255,255,0.95);
-      --chip-border-hover: rgba(15,23,42,0.18);
-      --headline: rgba(15,23,42,0.65);
-      --badge-bg: rgba(15,23,42,0.06);
-      --badge-border: rgba(15,23,42,0.10);
-      --about-text: rgba(15,23,42,0.72);
-      --btn-bg: rgba(255,255,255,0.72);
-      --btn-border: rgba(15,23,42,0.10);
-      --btn-bg-hover: rgba(255,255,255,0.95);
-      --btn-border-hover: rgba(15,23,42,0.20);
-      --btn-primary-bg: linear-gradient(135deg, rgba(102,140,255,0.30), rgba(82,205,185,0.25));
-      --btn-primary-border: rgba(102,140,255,0.35);
-      --btn-primary-bg-hover: linear-gradient(135deg, rgba(102,140,255,0.40), rgba(82,205,185,0.30));
-      --btn-ghost-bg: rgba(15,23,42,0.04);
-      --card-title: rgba(15,23,42,0.85);
-      --ql-bg: rgba(255,255,255,0.72);
-      --ql-border: rgba(15,23,42,0.10);
-      --ql-bg-hover: rgba(255,255,255,0.98);
-      --ql-border-hover: rgba(15,23,42,0.22);
-      --status-text: rgba(15,23,42,0.80);
-      --dot-bg: rgba(30, 180, 120, 0.90);
-      --dot-shadow: 0 0 0 6px rgba(30,180,120,0.15);
-      --muted: rgba(15,23,42,0.60);
-      --section-title: rgba(15,23,42,0.88);
-      --section-text: rgba(15,23,42,0.70);
-      --avatar-border: rgba(15,23,42,0.10);
-      --avatar-bg: rgba(255,255,255,0.85);
-      --edu-title: rgba(15,23,42,0.90);
-      --edu-role: rgba(15,23,42,0.65);
-      --edu-time: rgba(15,23,42,0.55);
-      --foot-border: rgba(15,23,42,0.10);
+      --glass-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(245, 248, 255, 0.7));
+      --glass-border: rgba(15, 23, 42, 0.08);
+      --glass-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+      --chip-bg: rgba(255, 255, 255, 0.7);
+      --chip-border: rgba(15, 23, 42, 0.1);
+      --chip-text: rgba(15, 23, 42, 0.78);
+      --chip-bg-hover: rgba(255, 255, 255, 0.95);
+      --chip-border-hover: rgba(15, 23, 42, 0.18);
+      --headline: rgba(15, 23, 42, 0.65);
+      --badge-bg: rgba(15, 23, 42, 0.06);
+      --badge-border: rgba(15, 23, 42, 0.1);
+      --about-text: rgba(15, 23, 42, 0.72);
+      --btn-bg: rgba(255, 255, 255, 0.72);
+      --btn-border: rgba(15, 23, 42, 0.1);
+      --btn-bg-hover: rgba(255, 255, 255, 0.95);
+      --btn-border-hover: rgba(15, 23, 42, 0.2);
+      --btn-primary-bg: linear-gradient(135deg, rgba(102, 140, 255, 0.3), rgba(82, 205, 185, 0.25));
+      --btn-primary-border: rgba(102, 140, 255, 0.35);
+      --btn-primary-bg-hover: linear-gradient(135deg, rgba(102, 140, 255, 0.4), rgba(82, 205, 185, 0.3));
+      --btn-ghost-bg: rgba(15, 23, 42, 0.04);
+      --card-title: rgba(15, 23, 42, 0.85);
+      --ql-bg: rgba(255, 255, 255, 0.72);
+      --ql-border: rgba(15, 23, 42, 0.1);
+      --ql-bg-hover: rgba(255, 255, 255, 0.98);
+      --ql-border-hover: rgba(15, 23, 42, 0.22);
+      --status-text: rgba(15, 23, 42, 0.8);
+      --dot-bg: rgba(30, 180, 120, 0.9);
+      --dot-shadow: 0 0 0 6px rgba(30, 180, 120, 0.15);
+      --muted: rgba(15, 23, 42, 0.6);
+      --section-title: rgba(15, 23, 42, 0.88);
+      --section-text: rgba(15, 23, 42, 0.7);
+      --avatar-border: rgba(15, 23, 42, 0.1);
+      --avatar-bg: rgba(255, 255, 255, 0.85);
+      --edu-title: rgba(15, 23, 42, 0.9);
+      --edu-role: rgba(15, 23, 42, 0.65);
+      --edu-time: rgba(15, 23, 42, 0.55);
+      --foot-border: rgba(15, 23, 42, 0.1);
     }
 
     :global(body) {
@@ -420,7 +411,9 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       margin: 0 auto;
     }
 
-    .section { margin-top: 26px; }
+    .section {
+      margin-top: 26px;
+    }
 
     .glass {
       background: var(--glass-bg);
@@ -438,7 +431,9 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       align-items: start;
     }
     @media (max-width: 920px) {
-      .top-grid { grid-template-columns: 1fr; }
+      .top-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     .profile {
@@ -448,7 +443,9 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       padding: 18px;
     }
     @media (max-width: 560px) {
-      .profile { grid-template-columns: 1fr; }
+      .profile {
+        grid-template-columns: 1fr;
+      }
     }
 
     .avatar-wrap {
@@ -468,7 +465,9 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       opacity: 0.95;
     }
 
-    .profile-meta { padding-top: 2px; }
+    .profile-meta {
+      padding-top: 2px;
+    }
 
     .name {
       font-size: 34px;
@@ -494,7 +493,10 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       background: var(--chip-bg);
       color: var(--chip-text);
       text-decoration: none;
-      transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+      transition:
+        transform 0.12s ease,
+        border-color 0.12s ease,
+        background 0.12s ease;
     }
     .chip:hover {
       transform: translateY(-1px);
@@ -516,8 +518,12 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       background: var(--badge-bg);
       border: 1px solid var(--badge-border);
     }
-    .sep { opacity: 0.45; }
-    .motto { opacity: 0.88; }
+    .sep {
+      opacity: 0.45;
+    }
+    .motto {
+      opacity: 0.88;
+    }
 
     .about {
       margin: 0;
@@ -543,7 +549,10 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       text-decoration: none;
       color: var(--page-text);
       background: var(--btn-bg);
-      transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+      transition:
+        transform 0.12s ease,
+        background 0.12s ease,
+        border-color 0.12s ease;
       cursor: pointer;
       font-weight: 600;
     }
@@ -563,11 +572,23 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       background: var(--btn-ghost-bg);
     }
 
-    .ico { width: 18px; height: 18px; }
-    .ico-sm { width: 16px; height: 16px; opacity: 0.9; }
+    .ico {
+      width: 18px;
+      height: 18px;
+    }
+    .ico-sm {
+      width: 16px;
+      height: 16px;
+      opacity: 0.9;
+    }
 
-    .right-stack { display: grid; gap: 18px; }
-    .card { padding: 16px; }
+    .right-stack {
+      display: grid;
+      gap: 18px;
+    }
+    .card {
+      padding: 16px;
+    }
 
     .card-title {
       display: flex;
@@ -578,7 +599,10 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       color: var(--card-title);
     }
 
-    .quick-links { display: grid; gap: 10px; }
+    .quick-links {
+      display: grid;
+      gap: 10px;
+    }
     .ql {
       display: flex;
       align-items: center;
@@ -611,7 +635,9 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       box-shadow: var(--dot-shadow);
     }
 
-    .muted { color: var(--muted); }
+    .muted {
+      color: var(--muted);
+    }
 
     .section-head h2 {
       margin: 0 0 12px 0;
@@ -626,8 +652,14 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       gap: 10px;
     }
 
-    .section-card { padding: 16px; }
-    .section-text { margin: 0; line-height: 1.8; color: var(--section-text); }
+    .section-card {
+      padding: 16px;
+    }
+    .section-text {
+      margin: 0;
+      line-height: 1.8;
+      color: var(--section-text);
+    }
 
     .edu-grid {
       display: grid;
@@ -635,10 +667,14 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       gap: 16px;
     }
     @media (max-width: 720px) {
-      .edu-grid { grid-template-columns: 1fr; }
+      .edu-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
-    .edu-card { padding: 16px; }
+    .edu-card {
+      padding: 16px;
+    }
     .edu-top {
       display: flex;
       justify-content: space-between;
@@ -660,7 +696,9 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       color: var(--edu-time);
     }
 
-    .dash { padding: 16px; }
+    .dash {
+      padding: 16px;
+    }
 
     .foot {
       margin-top: 28px;
