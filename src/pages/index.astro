@@ -119,27 +119,26 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       </div>
 
       <div class="edu-grid">
-        <div class="glass edu-card">
+        <a
+          class="glass edu-card edu-link"
+          href="https://bjb.xjtu.edu.cn/info/1071/1237.htm"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <div class="edu-top">
-            <div class="edu-title">
-              <a href="https://bjb.xjtu.edu.cn/info/1071/1237.htm" target="_blank" rel="noopener noreferrer">
-                西安交通大学
-              </a>
-            </div>
+            <div class="edu-title">西安交通大学</div>
             <div class="edu-role">少年班</div>
           </div>
-          <div class="edu-time">2023 – 2025</div>
-        </div>
+          <div class="edu-time">2023.9 – 2025.7</div>
+        </a>
 
-        <div class="glass edu-card">
+        <a class="glass edu-card edu-link" href="http://www.cs.xjtu.edu.cn/" target="_blank" rel="noopener noreferrer">
           <div class="edu-top">
-            <div class="edu-title">
-              <a href="http://www.cs.xjtu.edu.cn/" target="_blank" rel="noopener noreferrer"> 西安交通大学 </a>
-            </div>
+            <div class="edu-title">西安交通大学</div>
             <div class="edu-role">计算机科学与技术</div>
           </div>
-          <div class="edu-time">2025 – present</div>
-        </div>
+          <div class="edu-time">2025.9 – present</div>
+        </a>
       </div>
     </section>
 
@@ -613,8 +612,13 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       background: var(--ql-bg);
       text-decoration: none;
       color: var(--page-text);
+      transition:
+        transform 0.12s ease,
+        border-color 0.12s ease,
+        background 0.12s ease;
     }
     .ql:hover {
+      transform: translateY(-2px);
       background: var(--ql-bg-hover);
       border-color: var(--ql-border-hover);
     }
@@ -654,6 +658,15 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
 
     .section-card {
       padding: 16px;
+      transition:
+        transform 0.12s ease,
+        border-color 0.12s ease,
+        background 0.12s ease;
+    }
+    .section-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--ql-border-hover);
+      background: var(--ql-bg-hover);
     }
     .section-text {
       margin: 0;
@@ -674,6 +687,20 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
 
     .edu-card {
       padding: 16px;
+      transition:
+        transform 0.12s ease,
+        border-color 0.12s ease,
+        background 0.12s ease;
+    }
+    .edu-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+    .edu-link:hover {
+      transform: translateY(-2px);
+      border-color: var(--ql-border-hover);
+      background: var(--ql-bg-hover);
     }
     .edu-top {
       display: flex;
