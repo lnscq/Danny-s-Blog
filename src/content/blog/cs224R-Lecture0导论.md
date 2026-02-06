@@ -1,5 +1,5 @@
 ---
-title: "cs224R-Lecture 1 导论"
+title: "cs224R-Lecture 1 Introduction"
 description: "cs224R"
 pubDate: "Feb 4 2026"
 image: https://tc.alcy.cc/tc/20260121/0f24a621df74ce189710ce68f12d21a1.webp
@@ -9,7 +9,7 @@ tags:
   - RL
 ---
 
-## Lecture 1 导论
+## Lecture 1 Introduction
 
 [课程链接](https://cs224r.stanford.edu/)
 
