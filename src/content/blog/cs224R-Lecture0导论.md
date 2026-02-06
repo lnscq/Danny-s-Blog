@@ -8,8 +8,10 @@ categories:
 tags:
   - RL
 ---
+ 
+## Lecture 0 导论
 
-## Lecture 1 导论
+[课程链接](https://cs224r.stanford.edu/)
 
 ### 0.引言
 在传统的机器学习中，我们习惯于这样的设定
