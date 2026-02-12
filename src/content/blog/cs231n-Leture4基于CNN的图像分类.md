@@ -1,8 +1,8 @@
 ---
 title: "CS231n Lecture 5: 卷积神经网络（CNN）基础"
-description: "深入理解卷积层、池化层的原理与设计，以及CNN如何利用图像的二维结构进行高效特征提取。"
-pubDate: "Feb 12 2026"
-image: https://tc.alcy.cc/tc/20260121/5414bd765cac05c430529647e839d8cd.webp
+description: "cs231n"
+pubDate: "Feb 11 2026"
+image: https://tc.alcy.cc/tc/20260124/b7f63c9780a2cde2b7f58267a036497e.webp
 categories:
   - notebook
 tags:
