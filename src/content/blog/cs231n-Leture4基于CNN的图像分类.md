@@ -32,6 +32,8 @@ tags:
 
 ### 卷积层详解
 
+![](https://github.com/lnscq/picx-images-hosting/raw/master/image.7ehas4g8iy.webp)
+
 #### 基本运算
 
 给定一个三维输入张量 $\mathbf{X} \in \mathbb{R}^{C_{\text{in}} \times H \times W}$ 和一个三维卷积核（或滤波器）$\mathbf{K} \in \mathbb{R}^{C_{\text{in}} \times K_H \times K_W}$，卷积操作通过在输入的空间维度上滑动卷积核，并在每个位置计算**逐元素相乘再求和**（即点积）来生成一个标量输出。堆叠所有输出位置，形成一个二维的**激活图（activation map）**。
@@ -60,6 +62,8 @@ $$
 卷积层的参数数量为 $(K_H \times K_W \times C_{\text{in}} + 1) \times C_{\text{out}}$（+1 为偏置项）。与全连接层相比，这是一个巨大的缩减。例如，一个 $3\times3$ 卷积核作用于 $32\times32\times3$ 输入并产生 64 个输出通道，仅需 $(3\times3\times3+1)\times64 = 1792$ 个参数，而全连接层则需要 $3072 \times (32\times32\times64) \approx 190M$ 个参数。
 
 ### 池化层：平移不变性与降维
+
+![](https://github.com/lnscq/picx-images-hosting/raw/master/image.7axoueodq5.webp)
 
 池化层（Pooling Layer）是另一种关键的图像专用算子，主要用于**降低特征图的空间维度**，从而减少计算量和参数数量，并提供一定程度的**平移不变性（Translation Invariance）**。
 
