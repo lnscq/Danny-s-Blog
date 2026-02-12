@@ -39,6 +39,11 @@ site:
           href: /blog/category/Paper%20Reading
           svg: "material-symbols:unknown-document-outline-rounded"
           target: _self
+        - id: notebook
+          text: Notebook
+          href: /blog/category/notebook
+          svg: "material-symbols:menu-book-outline-rounded"
+          target: _self
         # 子菜单项配置
     - id: project
       text: Project
