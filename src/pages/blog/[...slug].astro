@@ -26,6 +26,8 @@ const displayDate = blog.data.pubDate ? dayjs(blog.data.pubDate).format(DATE_FOR
 const image = new URL(`/og/${blog.slug}.png`, Astro.site).toString();
 const url = new URL(`/blog/${blog.slug}`, Astro.url.origin);
 const commentPath = `/blog/${blog.slug}`;
+const coverImage = blog.data.image ?? "";
+const hasCoverImage = Boolean(coverImage);
 ---
 
 <BaseLayout
@@ -35,35 +37,121 @@ const commentPath = `/blog/${blog.slug}`;
   headings={headings}
   showTOC={true}
 >
-  <MainCard title={blog.data.title} description={blog.data.description} image={blog.data.image} infoIcon="lucide:info">
-    <PostInfo
-      pubDate={displayDate}
-      badge={blog.data.badge}
-      word={remarkPluginFrontmatter.totalCharCount}
-      time={remarkPluginFrontmatter.readingTime}
-    />
+  {
+    hasCoverImage && (
+      <div
+        aria-hidden="true"
+        class="article-cover-backdrop"
+        style={`--article-cover-image: url('${coverImage}');`}
+      ></div>
+    )
+  }
 
-    <div class="mb-6">
-      <PostFilter categories={blog.data.categories} tags={blog.data.tags} />
-    </div>
+  <div class="relative z-10 article-reading-layer">
+    <MainCard title={blog.data.title} description={blog.data.description} image={blog.data.image} infoIcon="lucide:info">
+      <PostInfo
+        pubDate={displayDate}
+        badge={blog.data.badge}
+        word={remarkPluginFrontmatter.totalCharCount}
+        time={remarkPluginFrontmatter.readingTime}
+      />
 
-    <div class="mt-8">
-      <div id="content" class="prose max-w-none prose-headings:scroll-mt-20 prose-img:rounded-xl prose-img:mx-auto">
-        <Content />
-        <License
-          url={url}
-          title={blog.data.title}
-          image={blog.data.image}
-          pubDate={blog.data.pubDate}
-          badge={blog.data.badge}
-          categories={blog.data.categories}
-          tags={blog.data.tags}
-          word={remarkPluginFrontmatter.totalCharCount}
-          time={remarkPluginFrontmatter.readingTime}
-        />
+      <div class="mb-6">
+        <PostFilter categories={blog.data.categories} tags={blog.data.tags} />
       </div>
 
-      <Comments serverURL="https://my-repo-xi-green.vercel.app/" path={commentPath} />
-    </div>
-  </MainCard>
+      <div class="mt-8">
+        <div id="content" class="prose max-w-none prose-headings:scroll-mt-20 prose-img:rounded-xl prose-img:mx-auto">
+          <Content />
+          <License
+            url={url}
+            title={blog.data.title}
+            image={blog.data.image}
+            pubDate={blog.data.pubDate}
+            badge={blog.data.badge}
+            categories={blog.data.categories}
+            tags={blog.data.tags}
+            word={remarkPluginFrontmatter.totalCharCount}
+            time={remarkPluginFrontmatter.readingTime}
+          />
+        </div>
+
+        <Comments serverURL="https://my-repo-xi-green.vercel.app/" path={commentPath} />
+      </div>
+    </MainCard>
+  </div>
+
+  <style is:global>
+    @keyframes article-cover-fade-in {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes article-cover-drift {
+      0% {
+        transform: scale(1.08) translate3d(-1.5%, -1%, 0);
+      }
+      50% {
+        transform: scale(1.12) translate3d(1.5%, 1%, 0);
+      }
+      100% {
+        transform: scale(1.08) translate3d(-1.5%, -1%, 0);
+      }
+    }
+
+    .article-cover-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: -10;
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0;
+      animation: article-cover-fade-in 650ms ease-out forwards;
+    }
+
+    .article-cover-backdrop::before,
+    .article-cover-backdrop::after {
+      content: "";
+      position: absolute;
+      inset: -12%;
+    }
+
+    .article-cover-backdrop::before {
+      background-image: var(--article-cover-image);
+      background-size: cover;
+      background-position: center;
+      filter: blur(36px) saturate(1.2) brightness(0.85);
+      transform-origin: center;
+      animation: article-cover-drift 26s ease-in-out infinite;
+    }
+
+    .article-cover-backdrop::after {
+      background:
+        radial-gradient(circle at 20% 20%, oklch(var(--p) / 0.15), transparent 45%),
+        radial-gradient(circle at 80% 15%, oklch(var(--s) / 0.16), transparent 40%),
+        linear-gradient(to bottom, oklch(var(--b1) / 0.72), oklch(var(--b1) / 0.9));
+      backdrop-filter: blur(4px);
+    }
+
+    .article-reading-layer {
+      animation: article-cover-fade-in 420ms ease-out;
+    }
+
+    @media (max-width: 768px) {
+      .article-cover-backdrop::before {
+        filter: blur(30px) saturate(1.12) brightness(0.82);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .article-cover-backdrop::before {
+        animation: none;
+        transform: scale(1.08);
+      }
+    }
+  </style>
 </BaseLayout>

@@ -1,4 +1,4 @@
----
+﻿---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { Icon } from "astro-icon/components";
 import MainCard from "@/components/MainCard.astro";
@@ -51,48 +51,50 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       <section>
         <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
           <Icon name="lucide:file-text" class="w-6 h-6 text-primary" />
-          <span>Resume Snapshot</span>
+          <span>个人经历</span>
         </h2>
 
-        <div class="grid gap-4 md:grid-cols-2">
-          <div class="bg-base-200 rounded-xl p-5">
-            <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
-              <Icon name="lucide:graduation-cap" class="w-5 h-5 text-primary" />
-              <span>Education</span>
-            </h3>
-            <p class="text-base-content/80 text-sm leading-6">
-              Xi'an Jiaotong University, Gifted Young Class (2023.09 - 2025.07), then Computer Science and Technology major (2025.09 - Present). Finished core undergraduate prerequisites ahead of schedule.
-            </p>
-          </div>
+        <div class="rounded-2xl border border-base-content/10 bg-base-200/50 p-3 md:p-4">
+          <div class="space-y-3">
+            <article class="rounded-xl border border-base-content/10 bg-base-100/80 p-4 md:p-5 border-l-4 border-l-primary">
+              <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
+                <Icon name="lucide:graduation-cap" class="w-5 h-5 text-primary" />
+                <span>教育背景</span>
+              </h3>
+              <p class="text-base-content/80 text-sm leading-6">
+                西安交通大学少年班（2023.09 - 2025.07），随后进入计算机科学与技术专业（2025.09 - 至今），本科核心课程提前完成。
+              </p>
+            </article>
 
-          <div class="bg-base-200 rounded-xl p-5">
-            <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
-              <Icon name="lucide:flask-conical" class="w-5 h-5 text-primary" />
-              <span>Research</span>
-            </h3>
-            <p class="text-base-content/80 text-sm leading-6">
-              Research intern at Institute of Artificial Intelligence and Robotics, Xi'an Jiaotong University (2025.04 - Present), working on online RL optimization for diffusion and flow matching image generation models.
-            </p>
-          </div>
+            <article class="rounded-xl border border-base-content/10 bg-base-100/80 p-4 md:p-5 border-l-4 border-l-secondary">
+              <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
+                <Icon name="lucide:flask-conical" class="w-5 h-5 text-secondary" />
+                <span>科研经历</span>
+              </h3>
+              <p class="text-base-content/80 text-sm leading-6">
+                西安交通大学人工智能与机器人研究所科研实习（2025.04 - 至今），研究方向为扩散与 Flow Matching 图像生成模型的在线强化学习优化。
+              </p>
+            </article>
 
-          <div class="bg-base-200 rounded-xl p-5">
-            <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
-              <Icon name="lucide:book-open-check" class="w-5 h-5 text-primary" />
-              <span>Publication</span>
-            </h3>
-            <p class="text-base-content/80 text-sm leading-6">
-              Co-author of "Test-Time Online RL for Flow Matching Models" (under review, 2025.11), proposing a dual-branch online RL framework to improve controllability and generation quality.
-            </p>
-          </div>
+            <article class="rounded-xl border border-base-content/10 bg-base-100/80 p-4 md:p-5 border-l-4 border-l-accent">
+              <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
+                <Icon name="lucide:book-open-check" class="w-5 h-5 text-accent" />
+                <span>论文成果</span>
+              </h3>
+              <p class="text-base-content/80 text-sm leading-6">
+                共同作者论文《Test-Time Online RL for Flow Matching Models》（2025.11 在审），提出双分支在线强化学习框架，提升可控性与生成质量。
+              </p>
+            </article>
 
-          <div class="bg-base-200 rounded-xl p-5">
-            <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
-              <Icon name="lucide:trophy" class="w-5 h-5 text-primary" />
-              <span>Competition</span>
-            </h3>
-            <p class="text-base-content/80 text-sm leading-6">
-              Team Captain, RoboCup Vision Challenge (3D Object Recognition, 2026). Third Prize, Lanqiao Cup National Software Competition C/C++ Group (2025).
-            </p>
+            <article class="rounded-xl border border-base-content/10 bg-base-100/80 p-4 md:p-5 border-l-4 border-l-info">
+              <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
+                <Icon name="lucide:trophy" class="w-5 h-5 text-info" />
+                <span>竞赛经历</span>
+              </h3>
+              <p class="text-base-content/80 text-sm leading-6">
+                RoboCup Vision Challenge（3D 目标识别，2026）队长；蓝桥杯全国软件和信息技术专业人才大赛 C/C++ 组全国三等奖（2025）。
+              </p>
+            </article>
           </div>
         </div>
       </section>

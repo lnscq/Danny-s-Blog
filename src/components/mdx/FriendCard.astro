@@ -15,17 +15,17 @@ import { Icon } from "astro-icon/components";
 // Define type-based styling
 const typeConfig = {
   friend: {
-    bgClass: "bg-gradient-to-br from-primary/20 to-base-100",
+    bgClass: "bg-gradient-to-br from-primary/18 to-base-100/72",
     iconName: "lucide:users",
     borderClass: "border-primary/30",
   },
   tech: {
-    bgClass: "bg-gradient-to-br from-secondary/20 to-base-100",
+    bgClass: "bg-gradient-to-br from-secondary/18 to-base-100/72",
     iconName: "lucide:code-2",
     borderClass: "border-secondary/30",
   },
   contributor: {
-    bgClass: "bg-gradient-to-br from-accent/20 to-base-100",
+    bgClass: "bg-gradient-to-br from-accent/18 to-base-100/72",
     iconName: "lucide:git-pull-request",
     borderClass: "border-accent/30",
   },
@@ -38,7 +38,16 @@ const { bgClass, iconName, borderClass } = typeConfig[type];
   class={`card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300 ease-in-out hover:-translate-y-1.5 border ${borderClass} overflow-hidden animate-fade-in-up`}
 >
   <a href={url} target="_blank" rel="noopener noreferrer">
-    <div class={`${bgClass} p-4 flex flex-col items-center`}>
+    <div class={`relative isolate p-4 flex flex-col items-center ${bgClass}`}>
+      {
+        avatar && (
+          <div
+            aria-hidden="true"
+            class="friend-card-avatar-bg"
+            style={`--friend-avatar-bg: url('${avatar}');`}
+          ></div>
+        )
+      }
       <div class="avatar mb-3">
         <div class="w-16 h-16 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden">
           {
@@ -79,5 +88,25 @@ const { bgClass, iconName, borderClass } = typeConfig[type];
 
   .animate-fade-in-up {
     animation: fadeInUp 0.3s ease-out forwards;
+  }
+
+  .friend-card-avatar-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background-image: var(--friend-avatar-bg);
+    background-size: cover;
+    background-position: center;
+    filter: blur(10px) saturate(1.12) brightness(0.8);
+    transform: scale(1.12);
+    opacity: 0.62;
+  }
+
+  .friend-card-avatar-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom right, oklch(var(--b2) / 0.45), oklch(var(--b1) / 0.65));
   }
 </style>

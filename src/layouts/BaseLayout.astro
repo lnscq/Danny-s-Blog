@@ -188,7 +188,7 @@ const { title, image, description = SITE_DESCRIPTION, headings = [], showTOC = f
     </style>
   </head>
 
-  <body class="flex flex-col min-h-screen" {...isIndexed ? { "data-pagefind-body": true } : {}}>
+  <body class="relative flex flex-col min-h-screen overflow-x-hidden" {...isIndexed ? { "data-pagefind-body": true } : {}}>
     <Navbar />
 
     <div class="max-w-6xl mx-auto w-full flex-grow">

@@ -1,26 +1,32 @@
----
+﻿---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { Icon } from "astro-icon/components";
 import MainCard from "@/components/MainCard.astro";
-import LinkCard from "@/components/mdx/LinkCard.astro";
 import FriendCard from "@/components/mdx/FriendCard.astro";
 import Card from "@/components/temple/Card.astro";
 import CardGroup from "@/components/temple/CardGroup.astro";
 import Showcase from "@/components/mdx/Showcase.astro";
+import Comments from "@/components/widgets/Comments.astro";
 
 const sites = [{ name: "Frosti Demo", url: "https://frosti.saroprock.com/" }];
+const commentPath = "/friend";
+const applyTemplate = [
+  { label: "Name", value: "Danny's Blog" },
+  { label: "Desc", value: "Cogito, ergo sum." },
+  { label: "Link", value: "https://dannyshi.pages.dev/" },
+  { label: "Avatar", value: "https://dannyshi.pages.dev/head.jpg" },
+];
 ---
 
-<BaseLayout title="Friends">
+<BaseLayout title="友链">
   <CardGroup cols="1">
     <MainCard
-      title="Friends & Resources"
-      description="A collection of links to friends, technologies, and contributors to the Frosti project."
+      title="Friends"
+      description="收录朋友们的站点，也欢迎申请互链。"
       textOverlay="FRIENDS"
       infoIcon="lucide:link"
     >
       <div class="space-y-10">
-        <!-- Friends Section -->
         <section>
           <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
             <Icon name="lucide:users" class="w-6 h-6 text-primary" />
@@ -29,16 +35,16 @@ const sites = [{ name: "Frosti Demo", url: "https://frosti.saroprock.com/" }];
 
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             <FriendCard
-              name="蓝色奇夸克"
+              name="蓝色奇迹兔"
               avatar="https://lsqkk.github.io/image/logo_blue.png"
-              description="无穷的远方，无数的人们，都和我有关"
+              description="无穷的远方，无数的人们，都和我有关。"
               url="https://lsqkk.github.io"
               type="friend"
             />
             <FriendCard
               name="XJTU-AUTO2506"
               avatar="https://raw.githubusercontent.com/lsqkk/image/main/202510131153031.png"
-              description="为世界之光"
+              description="为世界之光。"
               url="https://auto2506.github.io"
               type="friend"
             />
@@ -52,54 +58,165 @@ const sites = [{ name: "Frosti Demo", url: "https://frosti.saroprock.com/" }];
           </div>
         </section>
 
-        <div class="divider my-8">
-          <Icon name="lucide:heart" class="w-10 h-10 text-primary" />
-        </div>
+        <section class="rounded-2xl border border-primary/20 bg-base-200/40 backdrop-blur-md p-5 sm:p-7 space-y-6">
+          <header class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-primary/15 text-primary flex items-center justify-center">
+              <Icon name="lucide:folder-plus" class="w-6 h-6" />
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold leading-tight">Apply Links</h2>
+              <p class="text-base-content/70">友链申请，让我们成为朋友吧。</p>
+            </div>
+          </header>
 
-        <div class="text-center">
-          <p class="text-base-content/80 mb-4">
-            想在此页面上展示吗？随时与我们联系或为项目做出贡献！
-          </p>
-          <a
-            href="https://github.com/lnscq/Danny-s-Blog"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn btn-primary gap-2"
-          >
-            <Icon name="lucide:github" class="w-5 h-5" />
-            <span>Contribute on GitHub</span>
-          </a>
-        </div>
+          <div class="border-t border-base-content/10 pt-6 space-y-5">
+            <div class="rounded-2xl border border-base-content/10 bg-base-100/40 p-4 sm:p-5">
+              <p class="text-base-content/85 mb-4 flex items-center gap-2">
+                <Icon name="lucide:info" class="w-4 h-4 text-info" />
+                <span>本站信息如下（点击可快速复制）：</span>
+              </p>
+
+              <div class="space-y-3">
+                {
+                  applyTemplate.map((item) => (
+                    <button
+                      type="button"
+                      class="friend-apply-copy-btn group"
+                      data-friend-copy={item.value}
+                      aria-label={`复制 ${item.label}`}
+                    >
+                      <span class="friend-apply-key">{item.label}:</span>
+                      <span class="friend-apply-value">{item.value}</span>
+                      <span class="friend-apply-status" data-copy-status>
+                        点击复制
+                      </span>
+                    </button>
+                  ))
+                }
+              </div>
+            </div>
+
+            <p class="text-base-content/80 flex items-center gap-2">
+              <Icon name="lucide:square-pen" class="w-4 h-4 text-warning" />
+              <span>申请时还请按照这个模板留言。</span>
+            </p>
+
+            <div class="rounded-2xl border border-base-content/10 bg-base-100/40 p-4 sm:p-5">
+              <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
+                <Icon name="lucide:badge-check" class="w-5 h-5 text-success" />
+                <span>申请说明</span>
+              </h3>
+              <ul class="list-disc pl-6 space-y-2 text-base-content/85">
+                <li>请先在你的友链页添加本站。</li>
+                <li>请确保你的网站可以正常访问。</li>
+                <li>博客内容需合法合规，且无恶意跳转。</li>
+              </ul>
+            </div>
+          </div>
+        </section>
       </div>
     </MainCard>
+
     <Card>
       <div class="p-4 sm:p-6">
-        <div class="space-y-10">
-          <section>
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2">
-              <h2 class="text-2xl font-bold flex items-center gap-2">
-                <Icon name="lucide:layout-template" class="w-6 h-6 text-primary" />
-                <span>使用 Frosti 的网站</span>
-              </h2>
-              <a
-                href="https://github.com/EveSunMaple/Frosti/edit/main/src/pages/friend.astro"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn btn-sm btn-outline btn-primary gap-2"
-              >
-                <Icon name="lucide:plus-circle" class="w-4 h-4" />
-                Add Your Site
-              </a>
-            </div>
-            <p class="text-base-content/70 mb-6">
-              这是使用 Frosti 构建的网站列表。想让你的网站上榜吗？点击右上角的“添加你的网站”按钮，通过提交拉取请求来编辑此页面！
-            </p>
-            <div class="flex flex-wrap items-center gap-3">
-              {sites.map((site) => <Showcase name={site.name} url={site.url} />)}
-            </div>
-          </section>
-        </div>
+        <Comments serverURL="https://my-repo-xi-green.vercel.app/" path={commentPath} />
       </div>
     </Card>
   </CardGroup>
 </BaseLayout>
+
+<style>
+  .friend-apply-copy-btn {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 72px 1fr auto;
+    gap: 0.75rem;
+    align-items: center;
+    text-align: left;
+    border: 1px solid oklch(var(--bc) / 0.08);
+    background: oklch(var(--b1) / 0.6);
+    border-radius: 0.75rem;
+    padding: 0.65rem 0.8rem;
+    transition: all 0.2s ease;
+  }
+
+  .friend-apply-copy-btn:hover {
+    border-color: oklch(var(--p) / 0.35);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px oklch(var(--bc) / 0.08);
+  }
+
+  .friend-apply-key {
+    font-weight: 600;
+    color: oklch(var(--bc) / 0.8);
+  }
+
+  .friend-apply-value {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    color: oklch(var(--bc) / 0.9);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .friend-apply-status {
+    font-size: 0.75rem;
+    color: oklch(var(--bc) / 0.55);
+    opacity: 0;
+    transform: translateX(4px);
+    transition: all 0.2s ease;
+  }
+
+  .friend-apply-copy-btn:hover .friend-apply-status,
+  .friend-apply-copy-btn.is-copied .friend-apply-status {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .friend-apply-copy-btn.is-copied {
+    border-color: oklch(var(--su) / 0.45);
+    background: oklch(var(--su) / 0.08);
+  }
+
+  @media (max-width: 640px) {
+    .friend-apply-copy-btn {
+      grid-template-columns: 64px 1fr;
+    }
+
+    .friend-apply-status {
+      display: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  const setupFriendApplyCopy = () => {
+    const buttons = document.querySelectorAll("[data-friend-copy]");
+    buttons.forEach((button) => {
+      if (button.dataset.copyBound === "true") return;
+      button.dataset.copyBound = "true";
+      button.addEventListener("click", async () => {
+        const text = button.getAttribute("data-friend-copy") || "";
+        const status = button.querySelector("[data-copy-status]");
+        try {
+          await navigator.clipboard.writeText(text);
+          button.classList.add("is-copied");
+          if (status) status.textContent = "已复制";
+          setTimeout(() => {
+            button.classList.remove("is-copied");
+            if (status) status.textContent = "点击复制";
+          }, 1200);
+        } catch (error) {
+          if (status) status.textContent = "复制失败";
+          setTimeout(() => {
+            if (status) status.textContent = "点击复制";
+          }, 1200);
+          console.error("Failed to copy friend apply field:", error);
+        }
+      });
+    });
+  };
+
+  document.addEventListener("astro:page-load", setupFriendApplyCopy);
+  setupFriendApplyCopy();
+</script>
