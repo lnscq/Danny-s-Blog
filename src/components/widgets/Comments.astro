@@ -1,0 +1,97 @@
+---
+interface Props {
+  serverURL: string;
+  path?: string;
+}
+
+const { serverURL, path = "/" } = Astro.props as Props;
+const containerId = "waline";
+---
+
+<section class="mt-10">
+  <h2 class="text-xl font-semibold mb-4">评论</h2>
+  <div id={containerId}></div>
+</section>
+
+<style is:global>
+  @import url("https://unpkg.com/@waline/client@v3/dist/waline.css");
+
+  html[data-theme-type="light"] #waline {
+    --waline-theme-color: #64748b;
+    --waline-active-color: #475569;
+    --waline-color: #1f2937;
+    --waline-bg-color: #fbfcfe;
+    --waline-bg-color-light: #f3f6fa;
+    --waline-bg-color-hover: #edf2f7;
+    --waline-border-color: #d6dee8;
+    --waline-border: 1px solid var(--waline-border-color);
+    --waline-box-shadow: 0 10px 24px rgba(51, 65, 85, 0.08);
+    --waline-info-color: #64748b;
+    --waline-bq-color: #475569;
+    --waline-code-bg-color: #eef2f7;
+    --waline-disable-bg-color: #e6ebf2;
+    --waline-disable-color: #9aa8ba;
+  }
+
+  html[data-theme-type="dark"] #waline {
+    --waline-theme-color: #94a3b8;
+    --waline-active-color: #cbd5e1;
+    --waline-color: #dbe5f0;
+    --waline-bg-color: #0e141d;
+    --waline-bg-color-light: #151c27;
+    --waline-bg-color-hover: #1b2432;
+    --waline-border-color: #2b3647;
+    --waline-border: 1px solid var(--waline-border-color);
+    --waline-box-shadow: 0 14px 28px rgba(3, 8, 17, 0.45);
+    --waline-info-color: #92a2b6;
+    --waline-bq-color: #c4d1e0;
+    --waline-code-bg-color: #121a26;
+    --waline-disable-bg-color: #243041;
+    --waline-disable-color: #73849a;
+  }
+
+  #waline .wl-panel,
+  #waline .wl-card {
+    border-radius: 14px;
+    backdrop-filter: blur(4px);
+  }
+
+  #waline .wl-editor,
+  #waline .wl-input,
+  #waline .wl-card .wl-meta,
+  #waline .wl-card .wl-content {
+    font-size: 0.95rem;
+  }
+
+  #waline .wl-btn.primary {
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+  }
+
+  #waline .wl-sort li.active {
+    font-weight: 600;
+  }
+</style>
+
+<script type="module" is:inline define:vars={{ serverURL, path }}>
+  import { init } from "https://unpkg.com/@waline/client@v3/dist/waline.js";
+
+  const mountWaline = () => {
+    const container = document.getElementById("waline");
+    if (!container) return;
+    if (container.dataset.walinePath === path) return;
+
+    container.innerHTML = "";
+    init({
+      el: container,
+      serverURL,
+      path,
+      lang: "zh-CN",
+    });
+    container.dataset.walinePath = path;
+  };
+
+  document.addEventListener("astro:page-load", mountWaline);
+  mountWaline();
+</script>

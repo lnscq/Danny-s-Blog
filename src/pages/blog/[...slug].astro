@@ -3,6 +3,7 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import License from "@components/widgets/License.astro";
 import PostInfo from "@components/widgets/PostInfo.astro";
 import PostFilter from "@components/widgets/PostFilter.astro";
+import Comments from "@components/widgets/Comments.astro";
 import { type CollectionEntry, getCollection } from "astro:content";
 import dayjs from "@utils/dayjs";
 import { DATE_FORMAT } from "@config";
@@ -24,6 +25,7 @@ const { Content, remarkPluginFrontmatter, headings } = await blog.render();
 const displayDate = blog.data.pubDate ? dayjs(blog.data.pubDate).format(DATE_FORMAT) : "";
 const image = new URL(`/og/${blog.slug}.png`, Astro.site).toString();
 const url = new URL(`/blog/${blog.slug}`, Astro.url.origin);
+const commentPath = `/blog/${blog.slug}`;
 ---
 
 <BaseLayout
@@ -60,6 +62,8 @@ const url = new URL(`/blog/${blog.slug}`, Astro.url.origin);
           time={remarkPluginFrontmatter.readingTime}
         />
       </div>
+
+      <Comments serverURL="https://my-repo-xi-green.vercel.app/" path={commentPath} />
     </div>
   </MainCard>
 </BaseLayout>
