@@ -13,13 +13,12 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
     infoIcon="lucide:user"
   >
     <div class="space-y-10 mb-8">
-      <!-- 个人资料区域 -->
       <section class="flex flex-col md:flex-row gap-8 items-center md:items-start">
         <div class="avatar">
           <div
             class="w-32 h-32 md:w-40 md:h-40 rounded-xl ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden"
           >
-            <img src="https://github.com/lnscq/picx-images-hosting/raw/master/danny.1ovtlr8skx.webp" alt="SunMaple" width="160" height="160" loading="eager" />
+            <img src="https://github.com/lnscq/picx-images-hosting/raw/master/danny.1ovtlr8skx.webp" alt="DannyShi" width="160" height="160" loading="eager" />
           </div>
         </div>
 
@@ -37,91 +36,138 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
               <Icon name="lucide:github" class="w-4 h-4" />
               <span>GitHub</span>
             </a>
-            </a>
             <a href="mailto:danny_scq@outlook.com" class="btn btn-sm btn-outline gap-2">
               <Icon name="lucide:mail" class="w-4 h-4" />
-              <span>邮箱</span>
+              <span>Email</span>
             </a>
           </div>
 
           <p class="text-base-content/80">
-            Undergraduate Student of Xi'an Jiaotong University, majoring in CS.
+            Xi'an Jiaotong University undergraduate in Computer Science, focused on embodied AI and computer vision.
           </p>
         </div>
       </section>
 
-      <!-- GitHub 统计 -->
+      <section>
+        <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+          <Icon name="lucide:file-text" class="w-6 h-6 text-primary" />
+          <span>Resume Snapshot</span>
+        </h2>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="bg-base-200 rounded-xl p-5">
+            <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
+              <Icon name="lucide:graduation-cap" class="w-5 h-5 text-primary" />
+              <span>Education</span>
+            </h3>
+            <p class="text-base-content/80 text-sm leading-6">
+              Xi'an Jiaotong University, Gifted Young Class (2023.09 - 2025.07), then Computer Science and Technology major (2025.09 - Present). Finished core undergraduate prerequisites ahead of schedule.
+            </p>
+          </div>
+
+          <div class="bg-base-200 rounded-xl p-5">
+            <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
+              <Icon name="lucide:flask-conical" class="w-5 h-5 text-primary" />
+              <span>Research</span>
+            </h3>
+            <p class="text-base-content/80 text-sm leading-6">
+              Research intern at Institute of Artificial Intelligence and Robotics, Xi'an Jiaotong University (2025.04 - Present), working on online RL optimization for diffusion and flow matching image generation models.
+            </p>
+          </div>
+
+          <div class="bg-base-200 rounded-xl p-5">
+            <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
+              <Icon name="lucide:book-open-check" class="w-5 h-5 text-primary" />
+              <span>Publication</span>
+            </h3>
+            <p class="text-base-content/80 text-sm leading-6">
+              Co-author of "Test-Time Online RL for Flow Matching Models" (under review, 2025.11), proposing a dual-branch online RL framework to improve controllability and generation quality.
+            </p>
+          </div>
+
+          <div class="bg-base-200 rounded-xl p-5">
+            <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
+              <Icon name="lucide:trophy" class="w-5 h-5 text-primary" />
+              <span>Competition</span>
+            </h3>
+            <p class="text-base-content/80 text-sm leading-6">
+              Team Captain, RoboCup Vision Challenge (3D Object Recognition, 2026). Third Prize, Lanqiao Cup National Software Competition C/C++ Group (2025).
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section>
         <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
           <Icon name="lucide:github" class="w-6 h-6 text-primary" />
-          <span>GitHub 统计</span>
+          <span>GitHub Stats</span>
         </h2>
 
         <GitHubStats username="lnscq" showLanguages={false} showCommitGraph={true} />
       </section>
 
-      <!-- 技术栈 -->
       <section>
         <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
           <Icon name="lucide:code-2" class="w-6 h-6 text-primary" />
-          <span>技术栈</span>
+          <span>Tech Stack</span>
         </h2>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-  {
-    [
-      // ===== 基础 / 工具 =====
-      { name: "Git", icon: "simple-icons:git", color: "oklch(0.7 0.2 30)" },
-      { name: "C++", icon: "simple-icons:cplusplus", color: "oklch(0.6 0.2 240)" },
-      { name: "Python", icon: "simple-icons:python", color: "oklch(0.7 0.2 250)" },
-
-      // ===== 系统 / 环境 =====
-      { name: "Linux", icon: "simple-icons:linux", color: "oklch(0.7 0.2 110)" },
-      { name: "Ubuntu", icon: "simple-icons:ubuntu", color: "oklch(0.7 0.2 40)" },
-
-      // ===== 视觉 / AI / 工程 =====
-      { name: "OpenCV", icon: "simple-icons:opencv", color: "oklch(0.65 0.22 260)" },
-      { name: "PyTorch", icon: "simple-icons:pytorch", color: "oklch(0.7 0.25 25)" },
-
-      // ===== Web / 博客技术栈 =====
-      { name: "Astro", icon: "simple-icons:astro", color: "oklch(0.75 0.25 290)" },
-      { name: "TypeScript", icon: "simple-icons:typescript", color: "oklch(0.7 0.2 250)" },
-    ].map((tech) => (
-      <div class="flex flex-col items-center justify-center p-4 bg-base-200 rounded-lg hover:bg-base-300 transition-colors">
-        <div class="text-3xl mb-2" style={`color: ${tech.color}`}>
-          <Icon name={tech.icon} class="w-10 h-10" />
+          {
+            [
+              { name: "Git", icon: "simple-icons:git", color: "oklch(0.7 0.2 30)" },
+              { name: "C++", icon: "simple-icons:cplusplus", color: "oklch(0.6 0.2 240)" },
+              { name: "Python", icon: "simple-icons:python", color: "oklch(0.7 0.2 250)" },
+              { name: "Linux", icon: "simple-icons:linux", color: "oklch(0.7 0.2 110)" },
+              { name: "Ubuntu", icon: "simple-icons:ubuntu", color: "oklch(0.7 0.2 40)" },
+              { name: "OpenCV", icon: "simple-icons:opencv", color: "oklch(0.65 0.22 260)" },
+              { name: "PyTorch", icon: "simple-icons:pytorch", color: "oklch(0.7 0.25 25)" },
+              { name: "Astro", icon: "simple-icons:astro", color: "oklch(0.75 0.25 290)" },
+              { name: "TypeScript", icon: "simple-icons:typescript", color: "oklch(0.7 0.2 250)" },
+            ].map((tech) => (
+              <div class="flex flex-col items-center justify-center p-4 bg-base-200 rounded-lg hover:bg-base-300 transition-colors">
+                <div class="text-3xl mb-2" style={`color: ${tech.color}`}>
+                  <Icon name={tech.icon} class="w-10 h-10" />
+                </div>
+                <span class="text-sm font-medium">{tech.name}</span>
+              </div>
+            ))
+          }
         </div>
-        <span class="text-sm font-medium">{tech.name}</span>
-      </div>
-    ))
-  }
-</div>
-
       </section>
 
-      <!-- 贡献活动 -->
       <section>
         <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
           <Icon name="lucide:activity" class="w-6 h-6 text-primary" />
-          <span>近期活动</span>
+          <span>Recent Activities</span>
         </h2>
 
-        <div class="bg-base-200 rounded-xl p-6 overflow-x-auto">
-          <div class="flex flex-col md:flex-row gap-8 md:gap-4 md:overflow-x-auto md:pb-2">
+        <div class="bg-base-200 rounded-xl p-6">
+          <div class="flex flex-col gap-6">
             {
               [
                 {
-                  date: "2026年1月",
-                  title: "Robocup冬训",
-                  desc: "某先进视觉赛——3D检测，担任队长负责整体项目规划与部分代码编写。",
+                  date: "2026",
+                  title: "RoboCup Vision Challenge",
+                  desc: "Led 3D object recognition development as team captain, covering planning, modeling, and deployment in a simulation pipeline.",
+                },
+                {
+                  date: "2025.11",
+                  title: "Paper Submission",
+                  desc: "Submitted a flow-matching online RL paper focused on controllable text-to-image generation at test time.",
+                },
+                {
+                  date: "2025",
+                  title: "Lanqiao Cup",
+                  desc: "Won Third Prize in the national C/C++ group and ranked among top participants nationwide.",
                 },
               ].map((item, i) => (
-                <div class="relative flex gap-4 pb-2 md:pb-0 md:min-w-[250px]">
+                <div class="relative flex gap-4">
                   <div class="flex flex-col items-center">
                     <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-content text-xl">
                       {i + 1}
                     </div>
-                    <div class="w-0.5 h-16 bg-base-300 mt-2 md:hidden" />
+                    <div class="w-0.5 h-16 bg-base-300 mt-2" />
                   </div>
                   <div>
                     <div class="text-sm text-base-content/60 mb-1">{item.date}</div>
