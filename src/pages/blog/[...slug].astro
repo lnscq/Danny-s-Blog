@@ -39,16 +39,17 @@ const hasCoverImage = Boolean(coverImage);
 >
   {
     hasCoverImage && (
-      <div
-        aria-hidden="true"
-        class="article-cover-backdrop"
-        style={`--article-cover-image: url('${coverImage}');`}
-      ></div>
+      <div aria-hidden="true" class="article-cover-backdrop" style={`--article-cover-image: url('${coverImage}');`} />
     )
   }
 
   <div class="relative z-10 article-reading-layer">
-    <MainCard title={blog.data.title} description={blog.data.description} image={blog.data.image} infoIcon="lucide:info">
+    <MainCard
+      title={blog.data.title}
+      description={blog.data.description}
+      image={blog.data.image}
+      infoIcon="lucide:info"
+    >
       <PostInfo
         pubDate={displayDate}
         badge={blog.data.badge}
@@ -124,7 +125,7 @@ const hasCoverImage = Boolean(coverImage);
       background-image: var(--article-cover-image);
       background-size: cover;
       background-position: center;
-      filter: blur(36px) saturate(1.2) brightness(0.85);
+      filter: blur(12px) saturate(1.2) brightness(0.85);
       transform-origin: center;
       animation: article-cover-drift 26s ease-in-out infinite;
     }
@@ -143,7 +144,7 @@ const hasCoverImage = Boolean(coverImage);
 
     @media (max-width: 768px) {
       .article-cover-backdrop::before {
-        filter: blur(30px) saturate(1.12) brightness(0.82);
+        filter: blur(20px) saturate(1.12) brightness(0.82);
       }
     }
 

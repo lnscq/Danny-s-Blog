@@ -1,4 +1,4 @@
----
+﻿---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { Icon } from "astro-icon/components";
 import GitHubStats from "@/components/mdx/GitHubStats.astro";
@@ -10,10 +10,6 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
     <section class="container">
       <div class="top-grid">
         <div class="profile glass">
-          <div class="avatar-wrap">
-            <img class="avatar" src="/head.jpg" alt="avatar" loading="lazy" />
-          </div>
-
           <div class="profile-meta">
             <h1 class="name">Danny</h1>
 
@@ -34,6 +30,16 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
                 <Icon name="lucide:graduation-cap" class="ico" />
                 <span>Scholar</span>
               </a>
+              <a
+                class="chip"
+                href="/CV/CV_estudiante_microthali.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="CV"
+              >
+                <Icon name="lucide:file-text" class="ico" />
+                <span>CV</span>
+              </a>
             </div>
 
             <div class="headline">
@@ -43,8 +49,8 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
             </div>
 
             <p class="about">
-              我是西安交通大学大一学生，计算机科学与技术专业。欢迎访问我的个人网站！这里记录了我的项目、文章和一些想法。
-              Feel free to contact me.
+              I am a first-year student at Xi'an Jiaotong University, majoring in Computer Science and Technology.
+              Welcome to my personal website!
             </p>
 
             <div class="cta-row">
@@ -91,7 +97,7 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
             </div>
             <div class="status">
               <span class="dot"></span>
-              <span>放寒假中...</span>
+              <span>开学了...</span>
             </div>
           </div>
         </div>
@@ -105,10 +111,20 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       </div>
 
       <div class="glass section-card">
-        <p class="section-text">
-          我在持续做一些工程与研究型项目：机器人/具身智能、视觉检测与推理加速、生成式模型等。
-          这里会放项目记录、实验笔记与随手写的东西。
-        </p>
+        <div class="section-text intro-block">
+          <p>Hi! I'm Danny👋, a computer science undergraduate at Xi'an Jiaotong University（西安交通大学）.</p>
+          <p>
+            I have a passion for embodied AI 🤖 and computer vision 👁️‍🗨️. This website is a space where I share my
+            projects, thoughts, and experiences. Feel free to explore and reach out if you'd like to connect! 🤝
+          </p>
+        </div>
+        <div class="cv-block">
+          <p class="cv-line">Here is my academic CV, feel free to download it.</p>
+          <a class="cv-btn" href="/CV/CV_estudiante_microthali.pdf" target="_blank" rel="noopener noreferrer" download>
+            <Icon name="lucide:download" class="ico" />
+            <span>Download CV</span>
+          </a>
+        </div>
       </div>
     </section>
 
@@ -129,7 +145,7 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
             <div class="edu-title">西安交通大学</div>
             <div class="edu-role">少年班</div>
           </div>
-          <div class="edu-time">2023.9 – 2025.7</div>
+          <div class="edu-time">2023.9 - 2025.7</div>
         </a>
 
         <a class="glass edu-card edu-link" href="http://www.cs.xjtu.edu.cn/" target="_blank" rel="noopener noreferrer">
@@ -137,7 +153,7 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
             <div class="edu-title">西安交通大学</div>
             <div class="edu-role">计算机科学与技术</div>
           </div>
-          <div class="edu-time">2025.9 – present</div>
+          <div class="edu-time">2025.9 - present</div>
         </a>
       </div>
     </section>
@@ -178,7 +194,7 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       </h2>
 
       <script is:inline>
-        // 1) 更新时间（UTC+8）
+        // 1) 更新时间（UTC+8�?
         const el = document.getElementById("song-updated");
         if (el) {
           const s = new Intl.DateTimeFormat("zh-CN", {
@@ -192,45 +208,21 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
           }).format(new Date());
           el.textContent = s;
         }
-
-        // 2) 刷新随机一首披头士（embed + 文案 + 外链）
-        // 你可以在这里继续加更多曲目：embed 用 Apple Music 的 embed 链接
         const BEATLES_EMBEDS = [
           {
             songName: "Hey Jude",
             artist: "The Beatles",
-            note: "刷新会随机一首 / Random on refresh",
+            note: "刷新会随机一首/ Random on refresh",
             appleMusicLink: "https://music.apple.com/cn/song/hey-jude/1441164426",
-            // 常用做法：用包含该曲目的专辑/合辑 embed（单曲 embed 并不总是稳定）
+            // 常用做法：用包含该曲目的专辑/合辑 embed（单�?embed 并不总是稳定�?
             embedUrl: "https://embed.music.apple.com/cn/album/1/1441133180",
           },
           {
             songName: "Let It Be",
             artist: "The Beatles",
-            note: "刷新会随机一首 / Random on refresh",
+            note: "刷新会随机一首/ Random on refresh",
             appleMusicLink: "https://music.apple.com/cn/song/let-it-be/1441164524",
             embedUrl: "https://embed.music.apple.com/cn/album/let-it-be/1441164495",
-          },
-          {
-            songName: "Yesterday",
-            artist: "The Beatles",
-            note: "刷新会随机一首 / Random on refresh",
-            appleMusicLink: "https://music.apple.com/cn/song/yesterday/1441164517",
-            embedUrl: "https://embed.music.apple.com/cn/album/help/1441164449",
-          },
-          {
-            songName: "Come Together",
-            artist: "The Beatles",
-            note: "刷新会随机一首 / Random on refresh",
-            appleMusicLink: "https://music.apple.com/cn/song/come-together/1441164359",
-            embedUrl: "https://embed.music.apple.com/cn/album/abbey-road/1441164424",
-          },
-          {
-            songName: "Here Comes the Sun",
-            artist: "The Beatles",
-            note: "刷新会随机一首 / Random on refresh",
-            appleMusicLink: "https://music.apple.com/cn/song/here-comes-the-sun/1441164365",
-            embedUrl: "https://embed.music.apple.com/cn/album/abbey-road/1441164424",
           },
         ];
 
@@ -259,7 +251,7 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
           <!-- Text row -->
           <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <p class="text-sm text-base-content/60" id="featured-note">刷新会随机一首 / Random on refresh</p>
+              <p class="text-sm text-base-content/60" id="featured-note">刷新会随机一首?/ Random on refresh</p>
               <h3 class="text-xl font-bold leading-snug" id="featured-song">The Beatles</h3>
               <p class="text-base-content/70" id="featured-artist">The Beatles</p>
             </div>
@@ -272,7 +264,7 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
               rel="noreferrer"
             >
               <Icon name="lucide:external-link" class="w-5 h-5" />
-              <span>在 Apple Music 上打开</span>
+              <span>Apple Music 上打开</span>
             </a>
           </div>
 
@@ -291,7 +283,7 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
             <div class="alert bg-base-100/60 mt-3">
               <Icon name="lucide:info" class="w-5 h-5" />
               <span class="text-sm">
-                提示：稍等一会链接即可呈现~多数浏览器不允许“自动播放有声音的音乐”，需要你先点一次播放键。
+                提示：稍等一会链接即可呈现~多数浏览器不允许“自动播放有声音的音乐”，需要你先点一次播放键?
               </span>
             </div>
           </div>
@@ -437,31 +429,9 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
 
     .profile {
       display: grid;
-      grid-template-columns: 120px 1fr;
+      grid-template-columns: 1fr;
       gap: 18px;
       padding: 18px;
-    }
-    @media (max-width: 560px) {
-      .profile {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .avatar-wrap {
-      width: 120px;
-      height: 120px;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid var(--avatar-border);
-      background: var(--avatar-bg);
-      display: grid;
-      place-items: center;
-    }
-    .avatar {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.95;
     }
 
     .profile-meta {
@@ -672,6 +642,51 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
       margin: 0;
       line-height: 1.8;
       color: var(--section-text);
+    }
+    .intro-block {
+      max-width: 76ch;
+    }
+    .intro-block p {
+      margin: 0;
+    }
+    .intro-block p + p {
+      margin-top: 0.55em;
+    }
+    .cv-block {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .cv-line {
+      margin: 0;
+      color: var(--section-text);
+      line-height: 1.7;
+    }
+    .cv-btn {
+      width: fit-content;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--btn-border);
+      background: var(--btn-bg);
+      color: var(--page-text);
+      text-decoration: none;
+      font-weight: 600;
+      transition:
+        transform 0.12s ease,
+        background 0.12s ease,
+        border-color 0.12s ease;
+    }
+    .cv-btn:hover {
+      transform: translateY(-1px);
+      background: var(--btn-bg-hover);
+      border-color: var(--btn-border-hover);
+    }
+    .cv-sep {
+      opacity: 0.5;
     }
 
     .edu-grid {

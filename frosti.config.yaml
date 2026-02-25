@@ -57,7 +57,7 @@ site:
       target: _self
     - id: contact
       text: Contact
-      href: "mailto:contact.evesunmaple@outlook.com"
+      href: "mailto:contact.cqshi@stu.xjtu.edu.cn"
       target: _blank # 在新标签页打开
       svg: "material-symbols:attach-email-outline-rounded"
 
