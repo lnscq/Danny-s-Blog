@@ -47,8 +47,93 @@ const { title, image, description = SITE_DESCRIPTION, headings = [], showTOC = f
       })();
     </script>
 
+    <script is:inline>
+      (() => {
+        if (typeof window === "undefined")
+          return;
+        if (window.__frostiMouseGlowInit)
+          return;
+        window.__frostiMouseGlowInit = true;
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+          return;
+
+        const root = document.documentElement;
+        const coarse = window.matchMedia("(pointer: coarse)").matches;
+        const center = () => ({ x: window.innerWidth * 0.52, y: window.innerHeight * 0.34 });
+        const init = center();
+
+        let tx = init.x;
+        let ty = init.y;
+        let x = init.x;
+        let y = init.y;
+
+        const setVars = (px, py) => {
+          root.style.setProperty("--mouse-x", `${px}px`);
+          root.style.setProperty("--mouse-y", `${py}px`);
+        };
+
+        const tick = () => {
+          if (coarse) {
+            const t = performance.now() * 0.00023;
+            const c = center();
+            tx = c.x + Math.sin(t * 0.9) * 110;
+            ty = c.y + Math.cos(t * 1.07) * 85;
+          }
+          x += (tx - x) * 0.085;
+          y += (ty - y) * 0.085;
+          setVars(x, y);
+          requestAnimationFrame(tick);
+        };
+
+        if (!coarse) {
+          window.addEventListener("pointermove", (event) => {
+            tx = event.clientX;
+            ty = event.clientY;
+          }, { passive: true });
+
+          window.addEventListener("pointerleave", () => {
+            const c = center();
+            tx = c.x;
+            ty = c.y;
+          }, { passive: true });
+        }
+
+        window.addEventListener("resize", () => {
+          const c = center();
+          tx = c.x;
+          ty = c.y;
+        }, { passive: true });
+
+        setVars(x, y);
+        requestAnimationFrame(tick);
+      })();
+    </script>
+
     <!-- 点击粒子效果样式 -->
     <style is:inline>
+      :root {
+        --mouse-x: 50vw;
+        --mouse-y: 35vh;
+        --cursor-glow-a: rgba(48, 206, 255, 0.12);
+        --cursor-glow-b: rgba(67, 118, 255, 0.1);
+      }
+
+      html[data-theme-type="dark"] {
+        --cursor-glow-a: rgba(48, 206, 255, 0.18);
+        --cursor-glow-b: rgba(67, 118, 255, 0.16);
+      }
+
+      body {
+        background-image:
+          radial-gradient(620px 620px at var(--mouse-x) var(--mouse-y), var(--cursor-glow-a), transparent 62%),
+          radial-gradient(
+            900px 760px at calc(var(--mouse-x) + 18%) calc(var(--mouse-y) - 15%),
+            var(--cursor-glow-b),
+            transparent 70%
+          );
+        background-attachment: fixed;
+      }
+
       .click-particle {
         position: fixed;
         pointer-events: none;
