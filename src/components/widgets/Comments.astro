@@ -14,7 +14,37 @@ const containerId = "waline";
 </section>
 
 <style is:global>
-  @import url("https://unpkg.com/@waline/client@v3/dist/waline.css");
+  #waline {
+    width: 100%;
+    min-width: 0;
+  }
+
+  #waline .wl-editor {
+    width: 100%;
+  }
+
+  #waline .wl-header {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  #waline .wl-header-item {
+    min-width: 0;
+  }
+
+  #waline .wl-input,
+  #waline textarea {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  #waline .wl-footer {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
 
   html[data-theme-type="light"] #waline {
     --waline-theme-color: #64748b;
@@ -72,16 +102,33 @@ const containerId = "waline";
   #waline .wl-sort li.active {
     font-weight: 600;
   }
+
+  @media (max-width: 768px) {
+    #waline .wl-header {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 
 <script type="module" is:inline define:vars={{ serverURL, path }}>
   import { init } from "https://unpkg.com/@waline/client@v3/dist/waline.js";
+
+  const ensureWalineStyle = () => {
+    const styleId = "waline-style";
+    if (document.getElementById(styleId)) return;
+    const link = document.createElement("link");
+    link.id = styleId;
+    link.rel = "stylesheet";
+    link.href = "https://unpkg.com/@waline/client@v3/dist/waline.css";
+    document.head.appendChild(link);
+  };
 
   const mountWaline = () => {
     const container = document.getElementById("waline");
     if (!container) return;
     if (container.dataset.walinePath === path) return;
 
+    ensureWalineStyle();
     container.innerHTML = "";
     init({
       el: container,
