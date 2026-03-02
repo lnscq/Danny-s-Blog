@@ -381,6 +381,42 @@ const { title, image, description = SITE_DESCRIPTION, headings = [], showTOC = f
       });
     </script>
 
+    <script is:inline>
+      document.addEventListener("astro:page-load", () => {
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const links = document.querySelectorAll("a[data-footnote-ref], a[data-footnote-backref]");
+
+        links.forEach((link) => {
+          if (link.dataset.footnoteFxBound === "1")
+            return;
+          link.dataset.footnoteFxBound = "1";
+
+          link.addEventListener("click", () => {
+            if (!reduceMotion) {
+              link.classList.remove("is-footnote-clicked");
+              void link.offsetWidth;
+              link.classList.add("is-footnote-clicked");
+            }
+
+            const href = link.getAttribute("href");
+            if (!href || !href.startsWith("#"))
+              return;
+
+            const id = decodeURIComponent(href.slice(1));
+            const target = document.getElementById(id);
+            if (!target || reduceMotion)
+              return;
+
+            setTimeout(() => {
+              target.classList.remove("is-footnote-target");
+              void target.offsetWidth;
+              target.classList.add("is-footnote-target");
+            }, 180);
+          });
+        });
+      });
+    </script>
+
     <style is:inline>
       .btn-copy {
         position: relative;

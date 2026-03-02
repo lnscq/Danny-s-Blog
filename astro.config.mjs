@@ -8,6 +8,7 @@ import icon from "astro-icon";
 import { defineConfig } from "astro/config";
 import rehypeExternalLinks from "rehype-external-links";
 import rehypeKatex from "rehype-katex";
+import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 
 import { CODE_THEME, USER_SITE } from "./src/config.ts";
@@ -37,7 +38,12 @@ export default defineConfig({
     configFile: "./tailwind.config.mjs",
   }), playformCompress()],
   markdown: {
-    remarkPlugins: [remarkMath, remarkReadingTime],
+    remarkPlugins: [remarkMath, remarkReadingTime, remarkGfm],
+    remarkRehype: {
+      footnoteLabel: "脚注",
+      footnoteBackLabel: "返回内容",
+      footnoteBackContent: "↑",
+    },
     rehypePlugins: [rehypeKatex, [
       rehypeExternalLinks,
       {
