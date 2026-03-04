@@ -1,8 +1,8 @@
 # 网站的基本信息
 site:
-  tab: Danny'Blog # 浏览器标签栏上显示的文本
-  title: 💠 Danny'Blog # 网站的标题
-  description: Danny的小窝~ # 网站的描述，用于SEO等
+  tab: Danny's Blog # 浏览器标签栏上显示的文本
+  title: Danny's Blog # 网站的标题
+  description: Danny的个人网站 # 网站的描述，用于SEO等
   language: en # 网站的语言，例如 "en" 是英文
   favicon: /D.png # 网站的图标，用于浏览器标签栏和其他地方显示
   theme: # 更多主题 https://daisyui.com/docs/themes/
