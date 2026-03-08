@@ -1,0 +1,421 @@
+﻿---
+title: "pi_RL：基于流式VLA的在线强化学习微调"
+description: "论文阅读：pi_RL 与 VLA 在线强化学习"
+pubDate: "Mar 04 2026"
+image: https://tc.alcy.cc/tc/20260121/c275961101a58cde6afae5f5bd03585a.webp
+categories:
+  - Paper Reading
+tags:
+  - Paper Reading
+  - RL
+  - VLA
+---
+
+## $\pi_{RL}$：基于流式VLA的在线强化学习微调
+
+### Introduction
+
+目前主流的VLAs的训练方法主要遵循两个步骤：先对VLM进行与预训练与有监督微调（SFT）的范式。
+
+- 1. 在预训练的VLM基础中，VLA会在大规模，异构的人类演示数据集上进行微调
+- 2. 随后在目标任务上进行SFT，使其能力能够与特定的机器人形态与环境对齐。然而SFT面临一些关键的挑战。首先，大规模的专家轨迹获取成本十分昂贵且费力，齐次仅仅通过SFT微调的模型往往会过拟合专家的数据。
+
+因此近期的工作开始探索RL扩展到VLA的后训练过程，建立了一个如下图 **预训练->SFT->RL** 的三阶段的训练范式。使 VLA 能够通过主动环境交互和制定更具泛化能力的策略，将其性能提升至超越最初专家示范的水平。
+
+![](https://github.com/lnscq/picx-images-hosting/raw/master/image.7pu79m4ds.webp)
+
+然而，目前主流将RL应用到VLA模型中的模型主要局限在自回归VLA模型的领域，典型代表包括OpenVLA[^openvla]、OpenVLA-OFT[^openvla-oft]。这类模型采用离散动作解码器，以自回归或并行方式生成输出。核心在于让模型直接输出Action token，将动作维度离散化为256个区间，并使用Llama分词器中使用频率最低的256个token表示。这种方式与基于扩散和流的VLA形成对比，例如 $\pi$ 系列的 $\pi_0$[^pi0]、$\pi_{0.5}$[^pi05] 等代表性工作。这类模型通过flow matching中的的迭代过程来生成动作。这类VLA范式相较于Openvla-like的模型，不近动作生成频率更高，动作更加平顺，还能完成高灵巧度的任务。
+
+然而，由于如何针对执行动作来刻画对数似然这一根本挑战，导致目前VLA-RL算法无法直接兼容于基于流的VLA模型。为了解决上述问题，这篇论文提出了$\pi_{RL}$[^pirl]，这是首个用于微调基于流的VLA模型的开源并行在线强化学习框架。
+
+在这篇文章中，作者提出了两种解决方案来处理上述问题：
+
+- 1. Flow-Noise
+     将可学习的噪声网络集成到去噪流程中，并将该阶段建模为离散时间马尔可夫决策过程（MDP），以实现精确的对数似然估计。
+- 2. Flow-SDE
+     将普通微分方程（ODE）去噪流程转化为随机微分方程（SDE），在保证等效边缘分布用于探索的同时，构建了将去噪流程与策略—环境交互耦合的两层 MDP，并配合混合 ODE-SDE 采样技术来加速训练。
+
+### Related works
+
+VLA 模型最近通过集成多模态输入，在机器人领域取得了显著进展，实现了统一的感知、推理与控制。这一进展催生了一系列架构，包括Octo[^octo]、RT-1[^rt1]、OpenVLA[^openvla]、OpenVLA-OFT[^openvla-oft]、$\pi_0$[^pi0]、$\pi_{0.5}$[^pi05] 和 GR00T[^gr00t]。
+
+OpenVLA 作为自回归VLA 架构的代表，将动作空间离散化为符号化表示
+这使得基于语言条件的控制成为可能，通过将动作作为VLM 词汇表的一部分进行处理，但该方法在本质上限制了实现精细化运动所需的分辨率。
+
+为了实现更加灵巧且连续的物理行为，$\pi_0、\pi_{0.5}$ 作为基于流的VLA 架构的代表，引入了基于流匹配的动作分块架构。这使VLA 能够建模复杂的连续动作分布，从而实现更为灵巧的物理行为。
+
+近期的研究越来越多的集中于利用online RL来提升VLA的性能和泛化能力。
+
+- 1. SimpleVLA-RL[^simplevla-rl]基于OpenVLA-OFT和GRPO，展示了在数据稀缺情况下，强化学习能够提升VLA模型的长程规划能力
+- 2. RL4VLA（文中对应的经验研究工作）[^rl4vla]通过阶段性稀疏奖励，实证评估了PPO、GRPO和直接偏好优化（DPO）（Rafailov等，2023），发现PPO表现最佳
+- 3. VLA-RL[^vla-rl]提出了专用的机器人流程奖励模型，并优化了数据处理流程
+- 4. iRe-VLA[^ire-vla]提出了在强化学习探索与SFT更新之间迭代的框架
+- 5. RIPT-VLA[^ript-vla]将REINFORCE leave-one-out（RLOO）（Kool等，2018）算法应用于QueST（Mete等，2024）和OpenVLA-OFT架构
+- 6. RLinf-VLA[^rlinf-vla]为大规模强化学习训练VLA模型提供了统一且高效的框架，支持多样化的VLA——OpenVLA 和 OpenVLA-OFT 等架构，以及 PPO、GRPO 等多种强化学习（RL）算法，还有包括LIBERO 和 ManiSkill 在内的多种模拟器
+
+上述工作均体现了将online RL应用到VLA的潜力，然而由于上述提及的对数似然的挑战，使得其在基于流的VLA中的应用仍然受限。
+
+为解决online RL在flow matching模型的应用问题，主要研究集中在这里：
+
+- 1. Flow-GRPO[^flow-grpo]（Liu 等，2025a）将确定性常微分方程（ODE）转化为等价的随机微分方程（SDE），以实现随机性探索。在此基础上，后续研究如 Mix-GRPO[^mix-grpo]（Li 等，2025b）和 TempFlow-GRPO[^tempflow-grpo]（He 等，2025）通过混合 ODE-SDE rollout 进一步加速训练
+- 2. ReinFlow[^reinflow]（Zhang 等，2025）在流路径中注入可学习的噪声，并将其转化为具有可计算似然的离散时间马尔可夫过程，从而实现稳定的策略梯度更新
+- 3. 流策略优化（FPO）[^fpo]（McAllister 等，2025）将策略优化重构为最大化条件流匹配损失的优势加权比
+- 4. 策略无关强化学习（PA-RL）[^pa-rl]（Mark 等，2024）能够通过监督学习将评论家优化后的动作蒸馏到策略中，实现对各类扩散和 Transformer 架构的高效微调
+- 5. 通过强化学习引导扩散（DSRL）[^dsrl]（Wagenmaker 等，2025）则在其潜在噪声空间中执行强化学习，从而优化流策略，而无需直接修改策略参数本身
+
+### Method
+
+在介绍具体方法之前，作者首先对基于流匹配的 VLA 策略进行形式化描述。
+在 $\pi_0$ 与 $\pi_{0.5}$ 等流式 VLA 模型中，动作并不是通过一次前向传播直接生成，而是通过一个逐步去噪的生成过程得到。具体而言，模型首先从一个随机噪声分布中采样初始动作表示 $x_0$，随后通过一个由神经网络参数化的速度场 $v_\theta(x_t,t)$ 逐步对该噪声进行更新。该过程可以表示为如下常微分方程：
+
+$$
+\frac{dx_t}{dt}=v_\theta(x_t,t)
+$$
+
+通过数值积分将时间从 $t=0$ 推进到 $t=1$ 后，最终得到的 $x_1$ 即为生成的动作序列。在实际的 VLA 系统中，该动作通常表示为一段动作块（action chunk），随后在机器人环境中执行。
+
+然而，在强化学习框架下，策略优化通常依赖于动作在当前策略下的概率密度 $\pi(a|s)$。对于基于流匹配的模型而言，动作是通过连续的去噪轨迹生成的结果，其概率密度并不能像高斯策略或离散策略那样被显式写出。因此，在原始的 flow matching 模型中，执行动作的对数似然难以计算，这使得 PPO 或 GRPO 等策略梯度算法难以直接应用。
+
+为了解决这一问题，$\pi_{RL}$ 提出了两种不同的建模方式，使得 flow matching 生成过程能够与强化学习框架兼容。
+
+首先是 **Flow-Noise** 方法。该方法在原本确定性的去噪更新过程中引入一个可学习的噪声项，使得每一步的状态转移都具有明确的概率分布。具体而言，在离散化的时间步中，原始的更新公式
+
+$$
+x_{k+1}=x_k+\Delta t\,v_\theta(x_k,t_k)
+$$
+
+被改写为
+
+$$
+x_{k+1}=x_k+\Delta t\,v_\theta(x_k,t_k)+\sigma_k\epsilon
+$$
+
+其中 $\epsilon\sim\mathcal{N}(0,I)$。在这一建模下，去噪过程中的每一步更新都可以被看作一个带噪声的马尔可夫转移，因此整个生成过程可以被建模为一个离散时间的马尔可夫决策过程。由于每一步状态转移都具有明确的高斯概率密度，整条生成轨迹的概率可以表示为各个时间步条件概率的乘积，从而能够计算对应的对数似然并进行策略梯度更新。
+
+另一种方法是 **Flow-SDE**。与 Flow-Noise 在离散时间上注入噪声不同，Flow-SDE 从连续时间动力系统的角度出发，将原始的常微分方程改写为随机微分方程：
+
+$$
+dx=v_\theta(x,t)dt+g(t)dW_t
+$$
+
+其中 $dW_t$ 表示布朗运动。通过这种方式，生成过程本身被转化为一个随机动力系统。在离散化之后，每一步更新同样可以写为带噪声的随机转移，因此整个生成过程形成一个随机马尔可夫链。与 Flow-Noise 不同的是，Flow-SDE 保持了原始 ODE 模型的边缘分布一致性，同时引入随机性以支持探索。
+
+在 Flow-SDE 的框架下，作者进一步指出在 flow-based VLA 中实际上存在两个相互耦合的动态过程。第一个过程是模型内部的去噪生成过程，即从噪声逐渐生成动作轨迹；第二个过程是机器人在真实环境中的交互过程，即由状态、动作与奖励构成的环境 MDP。Flow-SDE 将这两个过程统一到一个两层 MDP 结构中，其中生成过程决定策略输出，而环境交互过程产生奖励信号，并通过强化学习更新策略参数。
+
+在实际训练过程中，作者还采用了 **混合 ODE-SDE rollout** 的策略，以在保持探索能力的同时提高采样效率。具体而言，在部分时间步使用随机 SDE 更新，而在其余时间步使用确定性 ODE 更新，从而在探索与计算效率之间取得平衡。
+
+### Experiments
+
+实验部分主要围绕性能提升、分布外泛化与跨架构迁移三个维度展开。作者在统一的 SFT 初始化基础上，分别采用 Flow-SDE 与 Flow-Noise 进行在线强化学习微调，并在多个机器人基准上进行对比评估。[^pirl][^pirl_bench]
+
+#### Benchmark 总览
+
+| Benchmark | 用途       | 论文中使用方式                                           |
+| --------- | ---------- | -------------------------------------------------------- |
+| LIBERO    | ID 主评测  | 四个子集（Spatial/Object/Goal/Long），主表报告平均成功率 |
+| ManiSkill | ID + OOD   | ID 主结果 + 多种 OOD 扰动（语言/视觉/语义/执行）         |
+| MetaWorld | ID + OOD   | ID 用 50 任务评测，OOD 用 ML45 检查任务泛化              |
+| CALVIN    | ID + OOD   | 长时序任务；OOD 使用 ABC→D 迁移评测                      |
+| SIMPLER   | 单任务验证 | 4 个抓放类任务，用于检验单任务增益                       |
+
+> 注：上表是论文实验设置摘要，具体数字见后续表格与附录。[^pirl_bench]
+
+#### 表 1：四大基准 ID 主结果（success rate, %）
+
+| Model       |     Method | LIBERO | ManiSkill | MetaWorld | CALVIN | Avg. | 相对 SFT |
+| ----------- | ---------: | -----: | --------: | --------: | -----: | ---: | -------: |
+| $\pi_0$     |        SFT |   57.6 |      38.4 |      50.8 |   57.5 | 51.1 |        - |
+| $\pi_0$     |   Flow-SDE |   96.1 |      78.8 |      78.1 |   61.7 | 78.7 |    +27.6 |
+| $\pi_0$     | Flow-Noise |   97.6 |      77.8 |      85.8 |   59.9 | 80.3 |    +29.2 |
+| $\pi_{0.5}$ |        SFT |   77.1 |      40.1 |      43.8 |   61.3 | 55.6 |        - |
+| $\pi_{0.5}$ |   Flow-SDE |   97.9 |      90.9 |      70.7 |   87.0 | 86.6 |    +31.0 |
+| $\pi_{0.5}$ | Flow-Noise |   98.3 |      89.7 |      66.1 |   84.5 | 84.7 |    +29.1 |
+
+从主结果可以观察到，两种 RL 方案均显著优于 SFT 基线，且在 $\pi_{0.5}$ 上的增益更为稳定。[^pirl_tab1]
+
+#### 表 2：ManiSkill OOD 细分结果（$\pi_{0.5}$）
+
+| 场景                            |  SFT | Flow-SDE | Flow-Noise |
+| ------------------------------- | ---: | -------: | ---------: |
+| Main-v3-train（ID）             | 40.1 |     90.9 |       89.7 |
+| Instruct-v1-test（语言变化）    | 46.6 |     77.0 |       85.7 |
+| Image-v1-test（视觉变化）       | 46.2 |     78.8 |       83.1 |
+| Texture05-v1-test（强纹理扰动） | 32.7 |     58.0 |       62.2 |
+| MultiCarrot-v1-test（语义干扰） | 16.7 |     36.8 |       38.2 |
+| Position-v1-test（执行偏移）    | 31.2 |     54.5 |       55.0 |
+
+ManiSkill 的细分结果表明，RL 带来的收益可迁移到多类 OOD 扰动；但在涉及任务语义迁移时，提升幅度相对受限。[^pirl_tab7][^pirl_ood_summary]
+
+#### 表 3：CALVIN OOD（ABC→D）
+
+| Setting       | Success Rate |
+| ------------- | -----------: |
+| SFT baseline  |         61.3 |
+| RL fine-tuned |         79.1 |
+| Absolute gain |        +17.8 |
+
+CALVIN 的 OOD 评测与 ManiSkill 呈现一致趋势，即在视觉和环境变化条件下，RL 微调后的策略具有更高鲁棒性。[^pirl_calvin_ood]
+
+#### 表 4：PPO vs GRPO（Flow-SDE, LIBERO）
+
+| Model       | SFT Avg. | +GRPO Avg. | +PPO Avg. |
+| ----------- | -------: | ---------: | --------: |
+| $\pi_0$     |     57.6 |       90.0 |      96.0 |
+| $\pi_{0.5}$ |     77.1 |       91.5 |      97.9 |
+
+在该实验配置下，PPO 在最终成功率上优于 GRPO。[^pirl_tab9]
+
+#### 表 5：单任务与跨骨干验证
+
+| 任务/模型                          |  SFT | RL 后 |  提升 |
+| ---------------------------------- | ---: | ----: | ----: |
+| SIMPLER（$\pi_0$，4 任务平均）     | 67.2 |  86.7 | +19.5 |
+| SIMPLER（$\pi_{0.5}$，4 任务平均） | 59.2 |  79.1 | +19.9 |
+| GR00T N1.5（LIBERO Avg.）          | 52.5 |  89.9 | +37.4 |
+
+单任务与跨骨干结果进一步说明，该方法并非仅对 $\pi$ 系列有效，在 GR00T 架构上同样能够获得显著提升。[^pirl_tab8][^pirl_tab10]
+
+### Conclusion
+
+总体而言，$\pi_{RL}$ 提出了一种面向基于流匹配的 VLA 模型的在线强化学习框架，并系统性地解决了 flow matching 模型在强化学习中的对数似然计算问题。通过 Flow-Noise 和 Flow-SDE 两种不同的建模方式，作者成功地将原本难以应用策略梯度算法的流式生成过程转化为可计算概率的随机决策过程，从而使 PPO、GRPO 等强化学习算法能够用于优化 flow-based VLA 策略。
+
+从更宏观的角度来看，这项工作展示了强化学习在 VLA 后训练阶段的重要潜力。与仅依赖专家示范数据的监督学习相比，通过环境交互获得的强化学习信号能够帮助模型发现更优的策略，并在复杂任务中表现出更强的泛化能力。同时，该工作也表明生成式策略模型（如扩散模型与流匹配模型）与强化学习的结合是一个值得进一步探索的重要方向。
+
+未来的研究可能会继续探索更高效的采样策略、更稳定的策略优化方法以及更加真实的机器人环境评估，以推动 VLA 模型在真实世界机器人系统中的应用。
+
+---
+
+## πRL 代码流程导读（对齐 `arXiv:2510.25889v3`）
+
+这份文档按“论文方法 -> 仓库代码 -> 运行时调用链”来梳理
+
+### 核心文件
+
+- 入口脚本: [train_embodied_agent.py](../examples/embodiment/train_embodied_agent.py)
+- Runner 主循环: [embodied_runner.py](../rlinf/runners/embodied_runner.py)
+- Actor 训练核心: [fsdp_actor_worker.py](../rlinf/workers/actor/fsdp_actor_worker.py)
+- Rollout 采样核心: [huggingface_worker.py](../rlinf/workers/rollout/hf/huggingface_worker.py)
+- Env 交互核心: [env_worker.py](../rlinf/workers/env/env_worker.py)
+- π0/π0.5 模型核心: [openpi_action_model.py](../rlinf/models/embodiment/openpi/openpi_action_model.py)
+- 算法注册入口: [registry.py](../rlinf/algorithms/registry.py)
+- 优势函数: [advantages.py](../rlinf/algorithms/advantages.py)
+- PPO/GRPO Loss: [losses.py](../rlinf/algorithms/losses.py)
+- π0.5 示例配置: [maniskill_ppo_openpi_pi05.yaml](../examples/embodiment/config/maniskill_ppo_openpi_pi05.yaml)
+- π0.5 默认模型配置: [pi0_5.yaml](../examples/embodiment/config/model/pi0_5.yaml)
+
+### 1. 论文方法与代码模块对齐
+
+| 论文模块              | 对应代码                                                                                                        | 你要看什么                              |
+| --------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| Online RL 框架        | [embodied_runner.py](../rlinf/runners/embodied_runner.py)                                                       | 每个训练 step 的执行顺序                |
+| Flow-SDE / Flow-Noise | [openpi_action_model.py](../rlinf/models/embodiment/openpi/openpi_action_model.py)                              | `noise_method` 分支的数学实现           |
+| 轨迹采样              | [huggingface_worker.py](../rlinf/workers/rollout/hf/huggingface_worker.py)                                      | 如何产出 `prev_logprobs/prev_values`    |
+| 环境交互              | [env_worker.py](../rlinf/workers/env/env_worker.py)                                                             | `obs -> action -> obs/reward/done` 管道 |
+| PPO/GRPO 更新         | [fsdp_actor_worker.py](../rlinf/workers/actor/fsdp_actor_worker.py), [losses.py](../rlinf/algorithms/losses.py) | 先算优势，再算策略/价值损失             |
+| GAE/GRPO 优势         | [advantages.py](../rlinf/algorithms/advantages.py), [registry.py](../rlinf/algorithms/registry.py)              | `adv_type` 如何路由                     |
+
+### 2. 从启动到一次训练 step 的调用链
+
+1. 启动入口 [train_embodied_agent.py](../examples/embodiment/train_embodied_agent.py)
+   - `validate_cfg(cfg)` 检查配置
+   - 创建 `actor/rollout/env` 三个 worker group
+   - 创建并启动 `EmbodiedRunner.run()`
+
+2. Runner 主循环 [embodied_runner.py](../rlinf/runners/embodied_runner.py)
+   - `update_rollout_weights()`：Actor 权重同步到 Rollout
+   - `env.interact(...)` 与 `rollout.generate(...)` 并行执行
+   - `actor.recv_rollout_trajectories(...)` 接收轨迹
+   - `actor.compute_advantages_and_returns()` 计算优势
+   - `actor.run_training()` 做参数更新
+
+3. 数据在 worker 间流动
+   - Env 发送观测到 Rollout
+   - Rollout 预测动作回 Env，并把训练轨迹送 Actor
+   - Actor 使用旧 logprob/value + 新前向结果计算 PPO/GRPO loss
+
+---
+
+### 3. 关键代码（中文注释版）
+
+#### 3.1 Runner 主循环（对应论文在线 RL 外层循环）
+
+来源: [embodied_runner.py](../rlinf/runners/embodied_runner.py)
+
+```python
+# 中文注释：每个 _step 是一次“收集在线数据 + 更新策略”的完整迭代
+for _step in range(start_step, self.max_steps):
+    # 中文注释：先把 actor 新权重同步给 rollout，保证采样策略是最新的
+    if _step % self.weight_sync_interval == 0:
+        self.update_rollout_weights()
+
+    # 中文注释：env 与 rollout 协同，产生本轮轨迹
+    env_handle = self.env.interact(...)
+    rollout_handle = self.rollout.generate(...)
+
+    # 中文注释：actor 从通道拿到 rollout 轨迹（含 prev_logprobs/prev_values）
+    self.actor.recv_rollout_trajectories(...).wait()
+
+    # 中文注释：根据 rewards/dones/values 计算优势和回报（GAE 或 GRPO）
+    self.actor.compute_advantages_and_returns().wait()
+
+    # 中文注释：进行 PPO/GRPO 参数更新
+    actor_training_handle = self.actor.run_training()
+    actor_training_metrics = actor_training_handle.wait()
+```
+
+#### 3.2 Flow-SDE 与 Flow-Noise 分支（对应论文两条技术路线）
+
+来源: [openpi_action_model.py](../rlinf/models/embodiment/openpi/openpi_action_model.py)
+
+```python
+if self.config.noise_method == "flow_sde":
+    # 中文注释：Flow-SDE
+    # 1) 由时间步构造 sigma_i（与 t 有关）
+    # 2) 用 ODE->SDE 的形式计算 x_t 的均值 x_t_mean 与方差 x_t_std
+    # 3) 采样 x_t = mean + noise * std，实现可探索的去噪更新
+    sigmas = noise_level * torch.sqrt(timesteps / (1 - adjusted_timesteps))[:-1]
+    sigma_i = sigmas[idx][:, None, None].expand_as(x_t)
+    x_t_std = torch.sqrt(delta) * sigma_i
+
+elif self.config.noise_method == "flow_noise":
+    # 中文注释：Flow-Noise
+    # 1) 均值项仍来自流匹配去噪动力学
+    # 2) 方差项不再手工公式给定，而是由 noise_head 学习得到
+    # 3) 因此可对概率密度建模得更灵活，适配联合 logprob 优化
+    x_t_std = self.noise_head(suffix_out)
+```
+
+#### 3.3 joint_logprob 逻辑（Flow-Noise 常配）
+
+来源: [openpi_action_model.py](../rlinf/models/embodiment/openpi/openpi_action_model.py)
+
+```python
+if self.config.joint_logprob:
+    # 中文注释：联合建模整条去噪链每一步的 logprob
+    # 通常配 flow_noise 使用，优化目标更“全链路”
+    denoise_inds = torch.arange(num_steps)
+else:
+    # 中文注释：只抽取某一步去噪的 logprob 参与训练
+    # 常见于 flow_sde 配置，计算量较小
+    denoise_inds = torch.tensor([random_idx] * num_steps)
+```
+
+#### 3.4 Actor 优势与损失更新（对应论文 RL 优化）
+
+来源: [fsdp_actor_worker.py](../rlinf/workers/actor/fsdp_actor_worker.py), [registry.py](../rlinf/algorithms/registry.py), [losses.py](../rlinf/algorithms/losses.py)
+
+```python
+# 中文注释：用统一入口按 adv_type 路由（gae/grpo/...）
+advantages_and_returns = calculate_adv_and_returns(
+    adv_type=self.cfg.algorithm.adv_type,
+    rewards=self.rollout_batch["rewards"],
+    dones=self.rollout_batch["dones"],
+    values=self.rollout_batch.get("prev_values", None),
+)
+
+# 中文注释：模型前向得到当前策略 logprobs/values
+output_dict = self.model(
+    forward_inputs=forward_inputs,
+    compute_logprobs=True,
+    compute_values=compute_values,
+)
+
+# 中文注释：按 loss_type 路由到 actor_critic 或 actor
+# PPO 核心是 ratio=exp(new_logprob-old_logprob) + clip
+loss, metrics_data = policy_loss(
+    loss_type=self.cfg.algorithm.loss_type,
+    logprobs=output_dict["logprobs"],
+    old_logprobs=prev_logprobs,
+    advantages=advantages,
+    values=output_dict.get("values", None),
+    returns=returns,
+)
+```
+
+### 4. 配置如何映射到论文设定
+
+参考: [maniskill_ppo_openpi_pi05.yaml](../examples/embodiment/config/maniskill_ppo_openpi_pi05.yaml), [pi0_5.yaml](../examples/embodiment/config/model/pi0_5.yaml)
+
+- `actor.model.openpi.noise_method`
+  - `flow_sde`: 走 SDE 公式分支
+  - `flow_noise`: 走 learnable noise 分支
+- `actor.model.openpi.joint_logprob`
+  - 一般 `flow_noise=True` 时设为 `True`
+- `actor.model.openpi.value_after_vlm`
+  - `True`: critic 接在 VLM 输出后（π0.5 常见）
+  - `False`: critic 接在 action expert 分支（π0 常见）
+- `algorithm.adv_type`
+  - `gae` / `grpo`
+- `algorithm.loss_type`
+  - `actor_critic` / `actor`
+
+---
+
+### 5. 建议阅读顺序
+
+1. [maniskill_ppo_openpi_pi05.yaml](../examples/embodiment/config/maniskill_ppo_openpi_pi05.yaml)
+2. [train_embodied_agent.py](../examples/embodiment/train_embodied_agent.py)
+3. [embodied_runner.py](../rlinf/runners/embodied_runner.py)
+4. [env_worker.py](../rlinf/workers/env/env_worker.py)
+5. [huggingface_worker.py](../rlinf/workers/rollout/hf/huggingface_worker.py)
+6. [fsdp_actor_worker.py](../rlinf/workers/actor/fsdp_actor_worker.py)
+7. [openpi_action_model.py](../rlinf/models/embodiment/openpi/openpi_action_model.py)
+8. [registry.py](../rlinf/algorithms/registry.py), [advantages.py](../rlinf/algorithms/advantages.py), [losses.py](../rlinf/algorithms/losses.py)
+
+[^openvla]: Kim et al., _OpenVLA: An Open-Source Vision-Language-Action Model_. arXiv:2406.09246. https://arxiv.org/abs/2406.09246
+
+[^openvla-oft]: Kim et al., _Fine-Tuning Vision-Language-Action Models: Optimizing Speed and Success_ (OpenVLA-OFT). arXiv:2502.19645. https://arxiv.org/abs/2502.19645
+
+[^pi0]: Black et al., _$\pi_0$: A Vision-Language-Action Flow Model for General Robot Control_. arXiv:2410.24164. https://arxiv.org/abs/2410.24164
+
+[^pi05]: Intelligence et al., _$\pi_{0.5}$: a Vision-Language-Action Model with Open-World Generalization\_. arXiv:2504.16054. https://arxiv.org/abs/2504.16054
+
+[^pirl]: Chen et al., _$\pi_\texttt{RL}$: Online RL Fine-tuning for Flow-based Vision-Language-Action Models\_. arXiv:2510.25889. https://arxiv.org/abs/2510.25889
+
+[^octo]: Octo Model Team et al., _Octo: An Open-Source Generalist Robot Policy_. arXiv:2405.12213. https://arxiv.org/abs/2405.12213
+
+[^rt1]: Brohan et al., _RT-1: Robotics Transformer for Real-World Control at Scale_. arXiv:2212.06817. https://arxiv.org/abs/2212.06817
+
+[^gr00t]: Bjorck et al., _GR00T N1: An Open Foundation Model for Generalist Humanoid Robots_. arXiv:2503.14734. https://arxiv.org/abs/2503.14734
+
+[^simplevla-rl]: Li et al., _SimpleVLA-RL: Scaling VLA Training via Reinforcement Learning_. arXiv:2509.09674. https://arxiv.org/abs/2509.09674
+
+[^rl4vla]: Liu et al., _What Can RL Bring to VLA Generalization? An Empirical Study_. arXiv:2505.19789. https://arxiv.org/abs/2505.19789
+
+[^vla-rl]: Lu et al., _VLA-RL: Towards Masterful and General Robotic Manipulation with Scalable Reinforcement Learning_. arXiv:2505.18719. https://arxiv.org/abs/2505.18719
+
+[^ire-vla]: Guo et al., _Improving Vision-Language-Action Model with Online Reinforcement Learning_. arXiv:2501.16664. https://arxiv.org/abs/2501.16664
+
+[^ript-vla]: Tan et al., _Interactive Post-Training for Vision-Language-Action Models_ (RIPT-VLA). arXiv:2505.17016. https://arxiv.org/abs/2505.17016
+
+[^rlinf-vla]: Zang et al., _RLinf-VLA: A Unified and Efficient Framework for Reinforcement Learning of Vision-Language-Action Models_. arXiv:2510.06710. https://arxiv.org/abs/2510.06710
+
+[^flow-grpo]: Liu et al., _Flow-GRPO: Training Flow Matching Models via Online RL_. arXiv:2505.05470. https://arxiv.org/abs/2505.05470
+
+[^mix-grpo]: Li et al., _MixGRPO: Unlocking Flow-based GRPO Efficiency with Mixed ODE-SDE_. arXiv:2507.21802. https://arxiv.org/abs/2507.21802
+
+[^tempflow-grpo]: He et al., _TempFlow-GRPO: When Timing Matters for GRPO in Flow Models_. arXiv:2508.04324. https://arxiv.org/abs/2508.04324
+
+[^reinflow]: Zhang et al., _ReinFlow: Fine-tuning Flow Matching Policy with Online Reinforcement Learning_. arXiv:2505.22094. https://arxiv.org/abs/2505.22094
+
+[^fpo]: McAllister et al., _Flow Matching Policy Gradients_. arXiv:2507.21053. https://arxiv.org/abs/2507.21053
+
+[^pa-rl]: Mark et al., _Policy Agnostic RL: Offline RL and Online RL Fine-Tuning of Any Class and Backbone_. arXiv:2412.06685. https://arxiv.org/abs/2412.06685
+
+[^dsrl]: Wagenmaker et al., _Steering Your Diffusion Policy with Latent Space Reinforcement Learning_. arXiv:2506.15799. https://arxiv.org/abs/2506.15799
+
+[^pirl_bench]: Chen et al., 2026, Sec. 5 与 Appendix C/D/E：实验覆盖 LIBERO、ManiSkill、MetaWorld、CALVIN、SIMPLER，并含 OOD 与单任务设置。https://arxiv.org/abs/2510.25889
+
+[^pirl_tab1]: Chen et al., 2026, Table 1（ID 综合对比）。https://arxiv.org/abs/2510.25889
+
+[^pirl_tab7]: Chen et al., 2026, Appendix Table 7（ManiSkill OOD 细分）。https://arxiv.org/abs/2510.25889
+
+[^pirl_calvin_ood]: Chen et al., 2026, Appendix Sec. D.2（CALVIN ABC→D：61.3%→79.1%）。https://arxiv.org/abs/2510.25889
+
+[^pirl_tab8]: Chen et al., 2026, Appendix Table 8（SIMPLER）。https://arxiv.org/abs/2510.25889
+
+[^pirl_tab9]: Chen et al., 2026, Appendix Table 9（PPO vs GRPO）。https://arxiv.org/abs/2510.25889
+
+[^pirl_tab10]: Chen et al., 2026, Appendix Table 10（GR00T N1.5）。https://arxiv.org/abs/2510.25889
+
+[^pirl_ood_summary]: Chen et al., 2026, Appendix Sec. D.4：RL 对相近任务和低层扰动有效，但对全新任务目标泛化有限。https://arxiv.org/abs/2510.25889
