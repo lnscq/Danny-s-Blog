@@ -11,6 +11,11 @@ tags:
   - VLA
 ---
 
+## 论文信息
+
+[Arxiv ID](https://arxiv.org/pdf/2510.25889)
+[幻觉翻译](https://hjfy.top/arxiv/2510.25889)
+
 ## $\pi_{RL}$：基于流式VLA的在线强化学习微调
 
 ### Introduction
@@ -187,6 +192,8 @@ CALVIN 的 OOD 评测与 ManiSkill 呈现一致趋势，即在视觉和环境变
 
 ## πRL 代码流程导读（对齐 `arXiv:2510.25889v3`）
 
+[代码仓库](https://github.com/RLinf/RLinf)
+
 这份文档按“论文方法 -> 仓库代码 -> 运行时调用链”来梳理
 
 ### 核心文件
@@ -233,9 +240,7 @@ CALVIN 的 OOD 评测与 ManiSkill 呈现一致趋势，即在视觉和环境变
    - Rollout 预测动作回 Env，并把训练轨迹送 Actor
    - Actor 使用旧 logprob/value + 新前向结果计算 PPO/GRPO loss
 
----
-
-### 3. 关键代码（中文注释版）
+### 3. 关键代码
 
 #### 3.1 Runner 主循环（对应论文在线 RL 外层循环）
 
@@ -348,8 +353,6 @@ loss, metrics_data = policy_loss(
   - `gae` / `grpo`
 - `algorithm.loss_type`
   - `actor_critic` / `actor`
-
----
 
 ### 5. 建议阅读顺序
 
