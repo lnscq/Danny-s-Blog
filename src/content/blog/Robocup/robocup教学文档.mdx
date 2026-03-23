@@ -10,6 +10,12 @@ tags:
   - Git
   - Robocup
 ---
+import Info from "@/components/mdx/Info.astro";
+import Warning from "@/components/mdx/Warning.astro";
+
+<Info>
+  这是一篇偏实操导向的入门文档，适合第一次接触 OrangePi 和 RoboCup 视觉赛环境的同学。建议按“联网 -> 查 IP -> SSH -> Linux / Conda 基础”的顺序操作。
+</Info>
 
 # 前言
 
@@ -118,6 +124,10 @@ sudo dpkg -i code_your_version.deb
 稍等片刻，等命令行又一次可以输入的时候，在命令行中输入 code，回车，进入 VSCode。
 
 # SSH
+
+<Warning>
+  文中提到的默认密码仅适合首次接入或教学场景。实际队伍协作时，建议尽快修改默认密码，并避免把账号口令长期写在公开文档里。
+</Warning>
 
 在这里简短的介绍 SSH 语法，一般来说 SSH 安装在每一个系统中，无需额外的安装，在这里推荐使用 VSCode 的 SSH 插件
 

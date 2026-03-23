@@ -8,7 +8,23 @@ categories:
 tags:
   - linear algebra
 ---
+import Info from "@/components/mdx/Info.astro";
+
+<Info>
+  这篇内容偏定理和判定条件，适合考前快速对照“有无解、唯一解、基础解系、秩”等常见题型。
+</Info>
+
 # 向量与线性方程组
+
+<details>
+  <summary>复习时优先看什么</summary>
+
+  <ul>
+    <li>先看线性方程组解的判定，再看秩和基础解系之间的关系。</li>
+    <li>做题时优先把“条件”翻译成矩阵秩的语言，通常会更直接。</li>
+  </ul>
+</details>
+
 ## 1. 线性方程组有解判定定理
 
 ### 1.1 非齐次线性方程组 $ A\mathbf{x} = \mathbf{0} $
@@ -80,7 +96,7 @@ $$
 
 | 线性相关 | 线性无关 |
 |---|---|
-| 存在不全为零的常数 $ k_1, k_2, \dots, k_s $ 使得<br>$ k_1\boldsymbol{\alpha}_1 + k_2\boldsymbol{\alpha}_2 + \dots + k_s\boldsymbol{\alpha}_s = \mathbf{0} $ | 若 $ k_1\boldsymbol{\alpha}_1 + \dots + k_s\boldsymbol{\alpha}_s = \mathbf{0} $，则必有 $ k_1 = k_2 = \dots = k_s = 0 $ |
+| 存在不全为零的常数 $ k_1, k_2, \dots, k_s $ 使得<br />$ k_1\boldsymbol{\alpha}_1 + k_2\boldsymbol{\alpha}_2 + \dots + k_s\boldsymbol{\alpha}_s = \mathbf{0} $ | 若 $ k_1\boldsymbol{\alpha}_1 + \dots + k_s\boldsymbol{\alpha}_s = \mathbf{0} $，则必有 $ k_1 = k_2 = \dots = k_s = 0 $ |
 | 齐次方程组 $ A\mathbf{x} = \mathbf{0} $ 有非零解 | 齐次方程组 $ A\mathbf{x} = \mathbf{0} $ 只有零解 |
 | $ \text{rank}(A) < s $（列降秩） | $ \text{rank}(A) = s $（列满秩） |
 | 向量组中**至少有一个向量**可由其余向量线性表示 | 向量组中**任何向量**都不能由其余向量线性表示 |

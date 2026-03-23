@@ -9,6 +9,12 @@ tags:
   - Paper
   - RL
 ---
+import Info from "@/components/mdx/Info.astro";
+
+<Info>
+  这篇周报主要围绕“生成模型 + 强化学习”展开。前一篇偏训练机制创新，后一篇偏系统架构设计，放在一起读会比较容易看出当前多模态生成研究的两个发力方向。
+</Info>
+
 # 论文信息 
 >[Arxiv ID](https://arxiv.org/pdf/2505.05470)
 
@@ -48,6 +54,15 @@ tags:
 
 
 ### **4. Experiment**
+
+<details>
+  <summary>阅读提示</summary>
+
+  <ul>
+    <li>看 `Flow-GRPO` 时，重点关注“如何把原本确定性的 flow matching 变成可用于在线 RL 的随机过程”。</li>
+    <li>看 `Dual-Process Image Generation` 时，重点关注系统 1 / 系统 2 的职责切分，而不只是图像质量本身。</li>
+  </ul>
+</details>
 
 # 论文信息 
 >[Arxiv ID](https://arxiv.org/pdf/2506.01955)

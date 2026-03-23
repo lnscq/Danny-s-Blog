@@ -8,6 +8,12 @@ categories:
 tags:
   - PTQ
 ---
+import Info from "@/components/mdx/Info.astro";
+
+<Info>
+  这周开始进入大模型量化主题。`SpinQuant` 的关键词是 learned rotations，阅读时可以一直盯着“它到底在帮量化误差解决什么问题”。
+</Info>
+
 # 论文信息 
 >[Arxiv ID](https://arxiv.org/pdf/2405.16406)
 
@@ -21,6 +27,15 @@ tags:
 
 
 ### 1. 当前研究目标与挑战
+
+<details>
+  <summary>阅读建议</summary>
+
+  <ul>
+    <li>先看问题背景和量化痛点，再回到方法细节。</li>
+    <li>如果第一次接触 PTQ，可以优先理解“为什么激活异常值会影响量化”。</li>
+  </ul>
+</details>
 
 * **目标**：将大型语言模型（LLMs）从 16 位浮点数 (FP16) 转换到 4 位整数 (INT4)，以大幅减少模型大小（$4\times$ 压缩）并提高推理速度。
 * **挑战**：LLMs 基于 **Transformer** 架构，其内部存在大量 **异常值 (Outliers)**，特别是经过 **FFN** 模块的非线性激活函数后。这些 Outliers 会导致量化精度急剧下降。
