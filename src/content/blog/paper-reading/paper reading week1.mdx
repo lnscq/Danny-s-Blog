@@ -9,6 +9,12 @@ tags:
   - Paper
   - llm agent
 ---
+import Info from "@/components/mdx/Info.astro";
+
+<Info>
+  本周笔记聚焦两条很经典的 Agent 脉络：`Tree of Thoughts` 侧重搜索与回溯，`ReAct` 侧重推理与行动交替。阅读时可以优先对比它们各自解决的“决策瓶颈”。
+</Info>
+
 # 论文信息 
 >[Arxiv ID](https://arxiv.org/pdf/2305.10601)
 
@@ -69,6 +75,16 @@ tags:
 #### **消融实验**
 - 无剪枝
 - 无回溯
+
+<details>
+  <summary>快速抓重点</summary>
+
+  <ul>
+    <li>`ToT` 强在显式搜索，适合多步规划和需要试错的问题。</li>
+    <li>`ReAct` 强在与外部环境交互，适合检索、网页操作、决策任务。</li>
+    <li>两者都在补足“直接一次性生成答案”时容易失控的问题。</li>
+  </ul>
+</details>
 
 ## 论文信息 
 >[Arxiv ID](https://arxiv.org/pdf/2210.03629)
