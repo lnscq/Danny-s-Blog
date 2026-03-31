@@ -1,0 +1,289 @@
+---
+---
+
+<style is:global>
+  paper-card {
+    display: block;
+    margin: 1.75rem 0;
+  }
+
+  .paper-card {
+    --paper-card-surface-top: color-mix(in oklab, white 82%, oklch(var(--b1)) 18%);
+    --paper-card-surface-bottom: color-mix(in oklab, oklch(var(--b1)) 88%, oklch(var(--b2)) 12%);
+    --paper-card-border: color-mix(in oklab, oklch(var(--bc)) 10%, transparent);
+    --paper-card-highlight: color-mix(in oklab, white 55%, transparent);
+    --paper-card-shadow: color-mix(in oklab, oklch(var(--bc)) 12%, transparent);
+    --paper-card-title: color-mix(in oklab, oklch(var(--bc)) 92%, black 8%);
+    --paper-card-text: color-mix(in oklab, oklch(var(--bc)) 72%, transparent);
+    --paper-card-meta: color-mix(in oklab, oklch(var(--bc)) 62%, transparent);
+    --paper-card-badge-bg: color-mix(in oklab, var(--paper-card-accent, oklch(var(--p))) 14%, white 86%);
+    --paper-card-badge-text: color-mix(in oklab, var(--paper-card-accent, oklch(var(--p))) 78%, black 22%);
+    --paper-card-link-hover: color-mix(in oklab, var(--paper-card-accent, oklch(var(--p))) 88%, black 12%);
+    --paper-card-media-top: color-mix(in oklab, var(--paper-card-accent, oklch(var(--p))) 12%, white 88%);
+    --paper-card-media-bottom: color-mix(in oklab, oklch(var(--b1)) 90%, white 10%);
+    --paper-card-placeholder: color-mix(in oklab, var(--paper-card-accent, oklch(var(--p))) 74%, white 26%);
+  }
+
+  html[data-theme-type="dark"] .paper-card {
+    --paper-card-surface-top: color-mix(in oklab, oklch(var(--b2)) 92%, black 8%);
+    --paper-card-surface-bottom: color-mix(in oklab, oklch(var(--b1)) 88%, black 12%);
+    --paper-card-border: color-mix(in oklab, oklch(var(--bc)) 10%, transparent);
+    --paper-card-highlight: color-mix(in oklab, white 8%, transparent);
+    --paper-card-shadow: color-mix(in oklab, black 55%, transparent);
+    --paper-card-title: color-mix(in oklab, white 90%, oklch(var(--bc)) 10%);
+    --paper-card-text: color-mix(in oklab, oklch(var(--bc)) 78%, transparent);
+    --paper-card-meta: color-mix(in oklab, oklch(var(--bc)) 72%, transparent);
+    --paper-card-badge-bg: color-mix(in oklab, var(--paper-card-accent, oklch(var(--p))) 20%, transparent);
+    --paper-card-badge-text: color-mix(in oklab, white 82%, var(--paper-card-accent, oklch(var(--p))) 18%);
+    --paper-card-link-hover: color-mix(in oklab, var(--paper-card-accent, oklch(var(--p))) 82%, white 18%);
+    --paper-card-media-top: color-mix(in oklab, var(--paper-card-accent, oklch(var(--p))) 24%, oklch(var(--b2)));
+    --paper-card-media-bottom: oklch(var(--b1));
+    --paper-card-placeholder: color-mix(in oklab, white 82%, var(--paper-card-accent, oklch(var(--p))) 18%);
+  }
+
+  .paper-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(120px, 180px) minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: center;
+    padding: 1.25rem;
+    border-radius: 1.5rem;
+    border: 1px solid var(--paper-card-border);
+    background:
+      radial-gradient(circle at top left, color-mix(in oklab, var(--paper-card-accent, oklch(var(--p))) 16%, transparent), transparent 38%),
+      linear-gradient(135deg, var(--paper-card-surface-top), var(--paper-card-surface-bottom));
+    box-shadow:
+      0 24px 48px -30px var(--paper-card-shadow),
+      inset 0 1px 0 var(--paper-card-highlight);
+    overflow: hidden;
+    transition:
+      transform 220ms ease,
+      box-shadow 220ms ease,
+      border-color 220ms ease;
+  }
+
+  .paper-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(120deg, transparent 0%, color-mix(in oklab, white 8%, transparent) 38%, transparent 72%);
+    opacity: 0.45;
+  }
+
+  .paper-card:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in oklab, var(--paper-card-accent, oklch(var(--p))) 45%, transparent);
+    box-shadow:
+      0 30px 60px -32px color-mix(in oklab, var(--paper-card-shadow) 115%, transparent),
+      inset 0 1px 0 color-mix(in oklab, var(--paper-card-highlight) 120%, transparent);
+  }
+
+  .paper-card__media {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: 1.15rem;
+    overflow: hidden;
+    background:
+      linear-gradient(145deg, var(--paper-card-media-top), var(--paper-card-media-bottom));
+    box-shadow:
+      0 14px 32px -24px color-mix(in oklab, var(--paper-card-shadow) 135%, transparent),
+      inset 0 0 0 1px color-mix(in oklab, white 10%, transparent);
+  }
+
+  .paper-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .paper-card__placeholder {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    color: var(--paper-card-placeholder);
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+  }
+
+  .paper-card__content {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .paper-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .paper-card__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 1.9rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    background: var(--paper-card-badge-bg);
+    color: var(--paper-card-badge-text);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .paper-card__meta-text {
+    color: var(--paper-card-meta);
+    font-size: 0.92rem;
+  }
+
+  .paper-card__title {
+    margin: 0;
+    color: var(--paper-card-title);
+    font-size: clamp(1.35rem, 1.2rem + 0.8vw, 2rem);
+    line-height: 1.15;
+    font-weight: 800;
+  }
+
+  .paper-card__description {
+    margin: 0;
+    color: var(--paper-card-text);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .paper-card__footer {
+    margin-top: 0.4rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .paper-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--paper-card-accent, oklch(var(--p)));
+    text-decoration: none;
+    font-weight: 700;
+    transition:
+      color 180ms ease,
+      transform 180ms ease;
+  }
+
+  .paper-card__link:hover {
+    color: var(--paper-card-link-hover);
+    transform: translateX(1px);
+  }
+
+  .paper-card__icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 720px) {
+    .paper-card {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .paper-card__media {
+      aspect-ratio: 16 / 9;
+    }
+
+    .paper-card__footer {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .paper-card,
+    .paper-card__link {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const escapeHtml = (value: unknown) =>
+    String(value ?? "").replace(/[&<>"']/g, (char: string) => {
+      const entityMap: Record<string, string> = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      };
+      return entityMap[char] || char;
+    });
+
+  const isSafeUrl = (value: string) => /^(https?:)?\/\//i.test(value) || value.startsWith("/");
+
+  if (!customElements.get("paper-card")) {
+    class PaperCard extends HTMLElement {
+      connectedCallback() {
+        if (this.dataset.enhanced === "true") return;
+
+        const title = this.getAttribute("title") || "Untitled Paper";
+        const description = this.getAttribute("description") || "";
+        const href = this.getAttribute("href") || this.getAttribute("url") || "#";
+        const image = this.getAttribute("image") || this.getAttribute("img") || "";
+        const badge = this.getAttribute("badge") || "Paper";
+        const meta = this.getAttribute("meta") || "";
+        const cta = this.getAttribute("cta") || "Visit Paper";
+        const accent = this.getAttribute("accent") || "oklch(var(--s))";
+        const initial = title.trim().charAt(0).toUpperCase() || "P";
+        const safeHref = isSafeUrl(href) ? href : "#";
+
+        this.style.setProperty("--paper-card-accent", accent);
+        this.dataset.enhanced = "true";
+        this.innerHTML = `
+          <article class="paper-card not-prose">
+            <div class="paper-card__media">
+              ${
+                image
+                  ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(title)}" loading="lazy" />`
+                  : `<div class="paper-card__placeholder">${escapeHtml(initial)}</div>`
+              }
+            </div>
+            <div class="paper-card__content">
+              <div class="paper-card__meta">
+                ${badge ? `<span class="paper-card__badge">${escapeHtml(badge)}</span>` : ""}
+                ${meta ? `<span class="paper-card__meta-text">${escapeHtml(meta)}</span>` : ""}
+              </div>
+              <h3 class="paper-card__title">${escapeHtml(title)}</h3>
+              ${description ? `<p class="paper-card__description">${escapeHtml(description)}</p>` : ""}
+              <div class="paper-card__footer">
+                <a
+                  class="paper-card__link"
+                  href="${escapeHtml(safeHref)}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span>${escapeHtml(cta)}</span>
+                  <svg class="paper-card__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M14 5h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M10 14 19 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M19 14v4a1 1 0 0 1-1 1h-12a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </article>
+        `;
+      }
+    }
+
+    customElements.define("paper-card", PaperCard);
+  }
+</script>

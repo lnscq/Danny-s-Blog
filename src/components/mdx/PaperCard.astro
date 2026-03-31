@@ -1,0 +1,38 @@
+---
+export interface PaperCardProps {
+  title: string;
+  description?: string;
+  href?: string;
+  url?: string;
+  image?: string;
+  img?: string;
+  badge?: string;
+  meta?: string;
+  cta?: string;
+  accent?: string;
+}
+
+const {
+  title,
+  description = "",
+  href,
+  url,
+  image,
+  img,
+  badge = "Paper",
+  meta = "",
+  cta = "Visit Paper",
+  accent,
+} = Astro.props as PaperCardProps;
+---
+
+<paper-card
+  title={title}
+  description={description}
+  href={href ?? url}
+  image={image ?? img}
+  badge={badge}
+  meta={meta}
+  cta={cta}
+  accent={accent}
+></paper-card>
