@@ -30,13 +30,7 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
                 <Icon name="lucide:graduation-cap" class="ico" />
                 <span>Scholar</span>
               </a>
-              <a
-                class="chip"
-                href="/CV/CV_estudiante_microthali.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="CV"
-              >
+              <a class="chip" href="/CV/CV.pdf" target="_blank" rel="noopener noreferrer" aria-label="CV">
                 <Icon name="lucide:file-text" class="ico" />
                 <span>CV</span>
               </a>
@@ -120,7 +114,7 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
         </div>
         <div class="cv-block">
           <p class="cv-line">Here is my academic CV, feel free to download it.</p>
-          <a class="cv-btn" href="/CV/CV_estudiante_microthali.pdf" target="_blank" rel="noopener noreferrer" download>
+          <a class="cv-btn" href="/CV/CV.pdf" target="_blank" rel="noopener noreferrer" download>
             <Icon name="lucide:download" class="ico" />
             <span>Download CV</span>
           </a>
@@ -393,7 +387,11 @@ import GitHubStats from "@/components/mdx/GitHubStats.astro";
 
     :global(body) {
       background:
-        radial-gradient(620px 620px at var(--mouse-x, 50vw) var(--mouse-y, 35vh), var(--cursor-glow-a), transparent 62%),
+        radial-gradient(
+          620px 620px at var(--mouse-x, 50vw) var(--mouse-y, 35vh),
+          var(--cursor-glow-a),
+          transparent 62%
+        ),
         radial-gradient(
           920px 760px at calc(var(--mouse-x, 50vw) + 18%) calc(var(--mouse-y, 35vh) - 15%),
           var(--cursor-glow-b),
