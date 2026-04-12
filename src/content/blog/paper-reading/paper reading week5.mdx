@@ -111,3 +111,6 @@ $$
 ## 总结
 
 MM-ACT 的核心贡献并不在于引入新的模块，而在于将 VLA 问题重新表述为一个统一的多模态离散生成问题。通过将 text、image 与 action 映射到同一 token 空间，并采用一致的 mask prediction 目标，模型避免了 autoregressive 与 diffusion 之间的目标不一致问题。在此基础上，通过共享上下文的多模态训练方式，使不同模态之间形成协同，从而显著提升 action 生成能力。在推理层面，通过区分 one-step 与 re-mask 两种解码策略，实现了效率与生成质量之间的结构性权衡。
+
+# Paper 2
+

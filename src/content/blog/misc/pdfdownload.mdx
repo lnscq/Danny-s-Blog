@@ -1,0 +1,40 @@
+---
+title: "如何从思源学堂上下载只读的 PDF 课件"
+description: "为同学们提供了一种从思源学堂下载pdf的方法"
+pubDate: "Apr 12 2026"
+image: https://tc.alcy.cc/tc/20260124/e490de9c2231c806d3551ab4b9d145ae.webp
+categories:
+  - misc
+tags:
+  - misc
+---
+# 前言
+笔者在进行离散数学的复习时，发现上传在[思源学堂](https://lms.xjtu.edu.cn/)的课件无法被直接下载，于是我顺便研究了下「如何下载网页中的 pdf 文档」这个问题，把方法记录在这里。
+
+当然这里还是得先说明，下载后的内容仅用于个人学习，请勿作他用，否则可能存在侵权嫌疑。
+
+# 通过获取文件路径进行下载
+这种方法适用于 HTML5 页面中内嵌 pdf 的下载，基本操作思路是通过开发者工具来找到 pdf 存取的文件路径。
+
+如果你对 H5 有一些了解，看得懂 Elements 里那些东西，自然是可以从中检索（Ctrl + F）出 .pdf 后缀的文件源，再从 Sources 中确定它的服务器源，从而推断得到它的路径。
+
+但是，如果是不懂这些的朋友，或许可以尝试更简便的另一种方法。
+
+我们都知道你所能在网页看到的东西都是存放在服务器的，当你进入网页后它会发送一个请求出去，获取到数据之后再呈现给你。
+
+那么，我们就可以从它的操作信息中找到我们需要的文件路径。页面中的网络操作信息——比如 HTTP 请求和响应、Cookie 等内容——都会记录在 Network 面板中，我们在这里做点小动作重新请求一次进行筛选就好，具体操作如下：
+
+## step 1 
+右键选择「检查」或是按下「 F12」 进入开发者工具。
+![](https://lnscq.github.io/picx-images-hosting/image.mnveshac.webp)
+## step 2 
+点击「 Network 」，选择筛选图标，点击「XHR」。如果此时面板无内容，按下「 Ctrl + R 」重新向服务器请求一次数据。
+![](https://lnscq.github.io/picx-images-hosting/image.7lkkzm0lyj.webp)
+## step 3 
+找到 pdf 文件，右键选择「Open in new tab」，点击下载即可。如果你刷新出来的 Network 内容较多，可以点击 Size 进行排序。一般来说，pdf 文件都相对比较大，排序后更容易找到它。
+![](https://lnscq.github.io/picx-images-hosting/image.73ujb10itj.webp)
+## step 4 
+此时我们就可以获取到 .pdf 的地址了，点击下载即可。
+![](https://lnscq.github.io/picx-images-hosting/image.32ijwmxofy.webp)
+
+再次声明：下载后的内容仅用于个人学习，请勿作他用，否则可能存在侵权嫌疑。
