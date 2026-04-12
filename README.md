@@ -1,4 +1,4 @@
-﻿# Danny'Blog
+﻿# Danny's Blog
 
 一个基于 Astro 的个人网站/博客，记录日常、文章与项目。
 
