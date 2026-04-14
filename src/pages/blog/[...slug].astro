@@ -84,6 +84,18 @@ const hasCoverImage = Boolean(coverImage);
     </MainCard>
   </div>
 
+  <div
+    id="image-lightbox"
+    class="image-lightbox"
+    aria-hidden="true"
+    role="dialog"
+    aria-label="Image preview"
+  >
+    <button type="button" class="image-lightbox__close" aria-label="Close image preview">×</button>
+    <img class="image-lightbox__image" alt="" />
+    <p class="image-lightbox__caption"></p>
+  </div>
+
   <style is:global>
     @keyframes article-cover-fade-in {
       from {
@@ -144,9 +156,87 @@ const hasCoverImage = Boolean(coverImage);
       animation: article-cover-fade-in 420ms ease-out;
     }
 
+    #content img,
+    #content picture {
+      cursor: zoom-in;
+    }
+
+    .image-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: clamp(1rem, 3vw, 2rem);
+      background: rgba(10, 15, 25, 0.82);
+      backdrop-filter: blur(12px);
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        opacity 180ms ease,
+        visibility 180ms ease;
+      visibility: hidden;
+    }
+
+    .image-lightbox.is-open {
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
+    }
+
+    .image-lightbox__close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.75rem;
+      height: 2.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 9999px;
+      background: rgba(15, 23, 42, 0.65);
+      color: white;
+      font-size: 2rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .image-lightbox__image {
+      max-width: min(92vw, 1400px);
+      max-height: calc(100vh - 8rem);
+      width: auto;
+      height: auto;
+      border-radius: 1rem;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+      object-fit: contain;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .image-lightbox__caption {
+      margin: 0;
+      max-width: min(92vw, 900px);
+      color: rgba(255, 255, 255, 0.82);
+      text-align: center;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
     @media (max-width: 768px) {
       .article-cover-backdrop::before {
         filter: blur(20px) saturate(1.12) brightness(0.82);
+      }
+
+      .image-lightbox__close {
+        top: 0.75rem;
+        right: 0.75rem;
+      }
+
+      .image-lightbox__image {
+        max-width: 100%;
       }
     }
 
@@ -155,6 +245,97 @@ const hasCoverImage = Boolean(coverImage);
         animation: none;
         transform: scale(1.08);
       }
+
+      .image-lightbox {
+        transition: none;
+      }
     }
   </style>
+
+  <script is:inline>
+    document.addEventListener("astro:page-load", () => {
+      const content = document.getElementById("content");
+      const lightbox = document.getElementById("image-lightbox");
+
+      if (!content || !lightbox || lightbox.dataset.bound === "1")
+        return;
+
+      lightbox.dataset.bound = "1";
+
+      const lightboxImage = lightbox.querySelector(".image-lightbox__image");
+      const lightboxCaption = lightbox.querySelector(".image-lightbox__caption");
+      const closeButton = lightbox.querySelector(".image-lightbox__close");
+      const body = document.body;
+
+      const closeLightbox = () => {
+        lightbox.classList.remove("is-open");
+        lightbox.setAttribute("aria-hidden", "true");
+        body.classList.remove("overflow-hidden");
+        lightboxImage.setAttribute("src", "");
+        lightboxImage.setAttribute("alt", "");
+        lightboxCaption.textContent = "";
+      };
+
+      const openLightbox = (img) => {
+        const source = img.currentSrc || img.src;
+        if (!source)
+          return;
+
+        const figure = img.closest("figure");
+        const figcaption = figure?.querySelector("figcaption");
+        const caption = figcaption?.textContent?.trim() || img.getAttribute("alt") || "";
+
+        lightboxImage.setAttribute("src", source);
+        lightboxImage.setAttribute("alt", img.getAttribute("alt") || "");
+        lightboxCaption.textContent = caption;
+        lightbox.classList.add("is-open");
+        lightbox.setAttribute("aria-hidden", "false");
+        body.classList.add("overflow-hidden");
+      };
+
+      content.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLImageElement))
+          return;
+        if (!content.contains(target))
+          return;
+
+        event.preventDefault();
+        openLightbox(target);
+      });
+
+      closeButton?.addEventListener("click", closeLightbox);
+
+      lightbox.addEventListener("click", (event) => {
+        if (event.target === lightbox) {
+          closeLightbox();
+        }
+      });
+
+      if (!window.__frostiImageLightboxEscBound) {
+        window.__frostiImageLightboxEscBound = true;
+
+        document.addEventListener("keydown", (event) => {
+          const activeLightbox = document.getElementById("image-lightbox");
+          if (!(activeLightbox instanceof HTMLElement))
+            return;
+          if (event.key !== "Escape" || !activeLightbox.classList.contains("is-open"))
+            return;
+
+          activeLightbox.classList.remove("is-open");
+          activeLightbox.setAttribute("aria-hidden", "true");
+          document.body.classList.remove("overflow-hidden");
+
+          const activeImage = activeLightbox.querySelector(".image-lightbox__image");
+          const activeCaption = activeLightbox.querySelector(".image-lightbox__caption");
+
+          activeImage?.setAttribute("src", "");
+          activeImage?.setAttribute("alt", "");
+          if (activeCaption) {
+            activeCaption.textContent = "";
+          }
+        });
+      }
+    });
+  </script>
 </BaseLayout>
