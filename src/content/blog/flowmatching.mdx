@@ -1,0 +1,82 @@
+---
+title: "Flow matching 学习笔记"
+description: "Flow matching 学习笔记"
+pubDate: "May 07 2026"
+image: https://tc.alcy.cc/tc/20260121/b913a2a939f515414adbe4662e74767a.webp
+categories:
+  - notebook
+tags:
+  - Flow matching
+  - 生成模型
+---
+## 引言
+近期在关注一些 VLA 中 action head 的一些工作，因此写一个笔记来记录自己的思考和学习过程。
+
+Flow matching 可以理解为一种”学习从噪声分布流向目标分布的速度场“的生成模型方法。传统的扩散模型通常把生成过程描述为一个逐步去噪的过程，而 Flow matching 更直接：假设有一个连续时间变量 $t$ $\in$ $[0,1]$，当 $t = 0$ 时样本来自简单的噪声分布，当 $t = 1$ 时样本应该变换为真实的目标数据分布。模型要学习的并不是"数据下一步的分布"，而是当前时间 $t$ 的数据分布 $x_t$ 应该朝哪个方向流动。
+
+Flow Matching 最早的核心论文是 Lipman 等人的《Flow Matching for Generative Modeling》。论文把它定义为一种用于训练 Continuous Normalizing Flows 的 simulation-free 方法，即训练时不需要反复数值模拟完整 ODE 轨迹，而是直接回归预先构造的条件概率路径上的向量场。它也能兼容多种 Gaussian probability paths，并且可以把 diffusion path 看作其中一种特例。
+
+## 从生成模型角度看问题
+
+生成模型的目标是学习一个数据分布：
+$$
+p_\text{target} (x)
+$$
+比如真实图片、语音、动作序列、文本 token embedding 等一系列不同模态的信息。我们直接从这个复杂的分布中采样很难。因此通常从一个简单的分布开始：
+$$
+x_0 \sim p_0(x)
+$$
+其中 $p_0$ 一般取标准高斯分布：
+$$
+p_0(x) = \mathcal{N}(0,I)
+$$
+然后通过某种变换，把噪声样本 $x_0$ 变成真实样本 $x_1$。Flow matching 的基本思想就是构造一条从噪声到数据的连续路径：
+$$
+x_0 \rightarrow x_t \rightarrow x_1
+$$
+其中 $t = 0$ 对应噪声分布，$t = 1$ 对应目标分布。
+
+## Flow 的核心对象：速度场
+
+Flow matching并不是预测最终的目标数据$x_1$，而是学习一个速度场：
+$$
+v_\theta (x,t)
+$$
+它表示：在时间 $t$，如果当前点在 $x$，那么应该朝哪个方向运动。
+
+生成过程可以写成一个微分方程：
+$$
+\frac{dx_t}{dt} = v_\theta(x_t, t)
+$$
+采样时，从噪声 $x_0 \sim p_0$ 出发，沿着这个 ODE 从$t = 0$ 积分到 $t = 1$，最后得到生成样本：
+$$
+x_1 = x_0 + \int_0^1 v_\theta(x_t, t) \, dt \quad x_0 \sim p_\text{init}
+$$
+这就是 Flow matching 的生成逻辑：训练一个速度场，采样时让噪声沿着速度场“流动”到目标分布。
+## 最简单的路径：线性插值
+为了训练模型，需要构造中间状态 $x_t$。最直观的方法是在线性路径上插值：
+$$
+x_t = (1 - t)x_0 + tx_1
+$$
+其中：
+$$
+x_0 \sim p_\text{init} \\
+x_1 \sim p_\text{traget}
+$$
+也就是说，我们随机在噪声分布中取一个点 $x_0$，再在真实目标分布中取一个数据点 $x_1$，然后把二者连成一条线。中间时刻 $t$ 的点就是这条线上的点。
+
+让这个式子对 $t$ 求导：
+$$
+\frac{dx_t}{dt} = x_1 - x_0
+$$
+所以在线性插值路径下，目标速度就是：
+$$
+u_t = x_1 - x_0
+$$
+这就是训练标签。模型输入当前点 $x_t$ 和时间 $t$，输入一个预测速度 $v_\theta(x_t,t)$，然后让他逼近真实速度 $x_1 - x_0$。
+
+训练损失可以写成：
+$$
+\mathcal{L}(\theta) = \mathbb{E}_{t, x_0, x_1} \left[ \| v_\theta(x_t, t) - (x_1 - x_0) \|^2 \right]
+$$
+这就是最常见、最容易理解的 Rectified Flow / Flow Matching 形式。Rectified Flow 的论文也把核心思想概括为学习一个 ODE，使其尽量沿连接两个分布样本的直线路径进行输运。
