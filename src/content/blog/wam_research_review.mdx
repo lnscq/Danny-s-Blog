@@ -1,0 +1,385 @@
+---
+title: "World-Action Models 研究综述：从测试时想象、时间建模到在线强化学习"
+description: "围绕 DreamZero、Fast-WAM、LingBot-VA、AHA-WAM、WAM-RL 与 HALO-WA 的 WAM 研究综述，聚焦测试时想象、时间结构和在线强化学习。"
+pubDate: "2026-07-09"
+updated: "2026-07-09"
+categories:
+  - Paper Reading
+tags:
+  - WAM
+  - Embodied AI
+  - VLA
+  - RL
+---
+
+# World-Action Models 研究综述
+
+> 文献快照截至 2026-07-09。本文区分三类陈述：**论文证据**指原文实验直接支持的结论；**跨论文推断**指在统一分析框架下得到、但尚未被严格控制实验验证的解释；**研究假设**指可以通过后续实验证伪的判断。
+
+## 0. 摘要与当前判断
+
+World-Action Model（WAM）让模型在同一框架中处理未来世界状态与机器人动作。本文采用较严格的边界：一个 WAM 至少要学习包含动作的未来联合预测，例如
+
+$$
+p_\theta(o_{t+1:t+H}, a_{t:t+H-1}\mid o_{\le t}, s_t, \ell),
+$$
+
+其中 $o$ 是视觉观察，$s$ 是本体状态，$\ell$ 是语言指令，$a$ 是动作。只学习 $p(o'\mid o,a,\ell)$ 的 action-conditioned world model 是 WAM 的前置组件；只学习 $p(a\mid o,s,\ell)$ 的 VLA 是直接策略。只有当未来预测与动作预测在训练目标、潜空间或推理过程中发生实质耦合时，才进入本文讨论的 WAM 范畴。
+
+截至当前，文献支持以下五点判断。
+
+1. **部分 WAM 可以在测试时跳过未来视频生成。** Fast-WAM 在相同骨干与训练框架内发现：保留视频联合训练、移除推理期未来视频生成，RoboTwin 平均成功率为 91.8%，与 Joint 的 90.6% 和 IDM 的 91.3% 接近；移除视频联合训练后降至 83.8%。LIBERO 上相应结果为 97.6%、98.5%、98.0% 与 93.5%。这是目前区分“训练期世界监督”和“测试期显式想象”最有力的控制实验。[Fast-WAM](https://arxiv.org/abs/2603.16666)
+
+2. **“自回归 WAM”通常是跨时间块自回归，不等于动作块内部逐动作生成。** DreamZero 和 LingBot-VA 都以 chunk 为基本预测单位：历史 chunk 只能影响未来 chunk，而同一 chunk 内的视频或动作变量仍通过扩散/流匹配并行去噪。因此，“跨 chunk 因果、chunk 内双向”是比“纯 AR 对纯双向”更准确的描述。[DreamZero](https://arxiv.org/abs/2602.15922)、[LingBot-VA](https://arxiv.org/abs/2601.21998)
+
+3. **WAM 的主要演进方向已经从“生成更完整的未来”转向“提供更便宜、更可用的世界表征”。** Fast-WAM 把视频分支变为单次世界编码器；GigaWorld-Policy 让动作先于未来视频生成，并把未来视频设为可选；AHA-WAM 将视频 DiT 变为低频 planner，复用其 layer-wise context，由高频 action DiT 闭环执行；RepWAM 则直接质疑重建型 VAE latent 是否适合控制。[GigaWorld-Policy](https://arxiv.org/abs/2603.17240)、[AHA-WAM](https://arxiv.org/abs/2606.09811)、[RepWAM](https://arxiv.org/abs/2606.13674)
+
+4. **“想象”只有参与候选比较、价值估计或闭环修正时，才具有强意义上的规划作用。** 单次联合生成一个未来和一段动作，可能只是给动作头提供训练期结构化监督。Cosmos Policy 同时预测动作、未来状态和值，并在测试时比较候选轨迹；其困难 ALOHA 任务在收集 648 条 rollout 后，model-based planning 带来平均 12.5 分提升。这类实验比“能生成未来视频”更直接地验证了想象的决策价值。[Cosmos Policy](https://arxiv.org/abs/2601.16163)
+
+5. **RL 如何接入 WAM 尚无统一答案。** WAM-RL 同时更新 world model 与 actor，能修正长程恢复行为，但面临 latent distribution drift；HALO-WA 冻结 WAM，只让轻量 actor-critic adapter 读取 reference action、机器人状态和 WAM latents，稳定性更强，但世界模型本身无法纠错。两者分别代表“联合可塑性”和“冻结先验上的部署适配”。[WAM-RL](https://arxiv.org/abs/2606.17906)、[HALO-WA](https://arxiv.org/abs/2607.04265)
+
+## 1. 统一问题定义：模型吃什么、吐什么、怎么训练
+
+| 范式 | 模型输入 | 模型输出 | 典型训练目标 | 测试时是否生成未来 | 本质接口 |
+|---|---|---|---|---|---|
+| VLA / direct policy | 当前/历史观察、状态、语言 | 动作或 action chunk | BC、flow matching、action token CE | 否 | $p(a\mid o,s,\ell)$ |
+| Action-conditioned world model | 当前观察、候选动作、语言 | 未来观察 | video diffusion / dynamics loss | 是 | $p(o'\mid o,a,\ell)$ |
+| Joint WAM | 观察、状态、语言、噪声视频/动作 latent | 未来视频与动作 | joint video-action flow matching | 通常是 | $p(o',a\mid o,s,\ell)$ |
+| Video-then-action / IDM WAM | 观察、语言；随后加入预测未来 | 未来视频；再输出动作 | video loss + inverse dynamics loss | 是 | $p(o'\mid o,\ell)p(a\mid o,o',s)$ |
+| Action-centered WAM | 观察、状态、语言；未来分支读取动作 | 动作；可选未来视频 | action loss + action-conditioned video loss | 可选 | $p(a\mid o,s,\ell)p(o'\mid o,a,\ell)$ |
+| Auxiliary-video WAM | 观察、状态、语言 | 训练时动作与未来；推理时仅动作 | action flow + auxiliary video flow | 否 | 世界预测作为表征正则 |
+| Planner-context WAM | 慢速世界上下文、最新观察、状态、语言 | 高频动作 chunk | video/action joint training + context routing | 不解码像素未来 | 世界 latent 是运行时接口 |
+
+这个表格揭示了一个容易混淆的点：**联合训练、联合去噪、显式解码未来视频、使用未来 latent、执行候选搜索是五个不同变量。** Fast-WAM 只移除了显式未来分支的推理路径，并没有移除训练期世界监督；AHA-WAM 保留运行时 planner latent，但不进行逐动作更新的视频生成；Cosmos Policy 可以在直接策略和 model-based planning 两种运行方式间切换。
+
+## 2. 文献脉络与设计位置
+
+| 工作 | 日期/版本 | 核心问题 | 世界—动作耦合方式 | 运行时未来接口 |
+|---|---:|---|---|---|
+| [Cosmos Policy](https://arxiv.org/abs/2601.16163) | 2026-01, v1 | 视频基础模型能否同时成为 policy、world model 和 value model | 将动作、未来状态和值都编码成 latent frames；可并行或 AR 解码 | 可直接出动作，也可生成未来并排序候选 |
+| [LingBot-VA](https://arxiv.org/abs/2601.21998) | 2026-03, v2 | 如何构造可闭环、带长期记忆的因果 WAM | 视频与动作双流 MoT，跨 chunk AR，chunk 内并行扩散 | 显式生成部分去噪的未来 latent |
+| [DreamZero](https://arxiv.org/abs/2602.15922) | 2026-02, v1 | 视频基础模型能否形成零样本、跨 embodiment 策略 | 14B AR DiT 联合去噪视频与动作；真实观察写回 KV cache | 显式未来视频/latent 与动作联合生成 |
+| [Fast-WAM](https://arxiv.org/abs/2603.16666) | 2026-03, v1 | WAM 是否需要测试时未来想象 | 视频 DiT + action expert MoT；视频是训练期辅助目标 | 仅首帧 clean latent 单次编码，不生成未来 |
+| [GigaWorld-Policy](https://arxiv.org/abs/2603.17240) | 2026-03, v2 | 如何避免动作质量受错误未来视频拖累 | 动作先预测，未来视频读取动作；block causal mask 防止信息泄漏 | 未来视频可选 |
+| [WAM robustness study](https://arxiv.org/abs/2603.22078) | 2026-04, v3 | WAM 是否真的比 VLA 更稳健 | 统一扰动基准比较 | 仅评测，不提出新 WAM |
+| [AHA-WAM](https://arxiv.org/abs/2606.09811) | 2026-06, v1 | 世界规划与动作执行是否应同频 | 低频 video DiT planner + 高频 action DiT；OVCR 路由复用 latent | 低频刷新 layer-wise planner context |
+| [RepWAM](https://arxiv.org/abs/2606.13674) | 2026-06, v1 | 重建型 latent 是否适合世界—动作建模 | 语义视觉 token 与 latent action transition 在同一空间 | 生成语义 visual-action latent |
+| [WAM-RL](https://arxiv.org/abs/2606.17906) | 2026-06, v1 | 如何同时在线优化 world model 与 actor | successful rollout video SFT + latent KL；actor 用重建奖励做 RL | 想象未来与真实执行做一致性奖励 |
+| [A2World](https://arxiv.org/abs/2606.29501) | 2026-06, v1 | action-conditioned 机器人视频预训练能否形成可迁移动力学先验 | 2.1M+ 轨迹训练 action-to-video，再适配 joint policy | A2World-policy 联合预测动作；A2World-sim 做模拟器 |
+| [HALO-WA](https://arxiv.org/abs/2607.04265) | 2026-07, v1 | WAM 如何快速适应真实精密操作误差 | 冻结 WAM；TD3+BC adapter 读取 reference action 与多层 latent | 不更新世界模型，latent 作为 RL memory |
+
+## 3. 核心论文精读
+
+### 3.1 DreamZero：把视频基础模型变成统一的 world-action generator
+
+**Motivation。** 传统 VLA 从静态图文预训练继承语义先验，擅长识别“对什么做”，但对未见过的物理运动和接触过程缺少直接先验。DreamZero 的核心假设是：预训练视频扩散模型已经学习了物体如何移动、接触和变化；如果机器人动作与未来视频在同一生成过程中对齐，动作头可以继承这种动态知识。
+
+**输入与输出。** 输入包括视觉历史、语言指令和 proprioceptive state；视频由 VAE 编码，状态与动作由轻量 encoder 投影。14B autoregressive DiT 通过 separate decoders 同时输出未来视频 latent 与 action chunk。训练时，当前 noisy chunk 可以读取过去 clean chunks；推理时，执行完动作后将真实观察写入 KV cache，替换模型想象，减轻 AR 误差累积。[原文方法与实时执行](https://arxiv.org/html/2602.15922v1)
+
+**训练目标。** 视频与动作共享 flow time，联合回归两种模态的 velocity field。其“AR”发生在 chunk 之间；一个 chunk 内的变量仍被并行去噪。teacher forcing 使用数据中的 clean history 预测下一块，这与闭环机器人每次能重新获得真实观察相匹配。
+
+**实验设计。** 论文从多个维度评测泛化：500 小时 diverse 与 repetitive 数据对比、5B/14B scaling、AR/BD 架构、未见任务与环境、video-only cross-embodiment transfer、30 分钟新 embodiment adaptation。论文报告 14B AR 版本通过系统与模型优化达到约 7 Hz，并称相对 VLA 的未见任务泛化超过 2 倍。[DreamZero](https://arxiv.org/abs/2602.15922)
+
+**限制。** AR 与 BD 对比同时牵涉固定长度、视频下采样、caption 对齐和 KV cache，不能把结果简单归因于“因果 mask 更好”。论文文字称二者 task progress 接近，但 AR 动作更平滑且推理快 3–4 倍；当前证据更支持 AR 的部署与时间对齐优势，尚未严格证明它在同等表示、同等 FPS、同等 compute 下具有更强策略表达能力。
+
+### 3.2 Fast-WAM：把“训练时学世界”和“测试时想未来”拆开
+
+**Motivation。** 早期 WAM 通常把性能归因于“先想象未来，再生成动作”，但训练期视频监督与测试期未来生成一直绑定，无法判断收益究竟来自哪一部分。Fast-WAM 的实验目标是做因果拆分。
+
+**Method。** 模型以 Wan2.2-5B video DiT 为世界骨干，添加约 1B 的 action expert，采用带 shared attention 的 Mixture-of-Transformers。训练时同时最小化 action flow matching loss 与 future-video flow matching loss：
+
+$$
+\mathcal L = \mathcal L_{act} + \lambda_v\mathcal L_{video}.
+$$
+
+注意力 mask 阻止动作读取训练时才存在的未来视频信息，从而避免 train–test leakage。推理时只保留第一帧 clean latent，video DiT 单次前向形成 world representation，action expert 再通过多步 flow sampling 生成 action chunk；没有 future noisy tokens，也不进行未来视频去噪。[Fast-WAM 方法](https://arxiv.org/html/2603.16666v1)
+
+**最关键的控制变量。** Fast-WAM-Joint 在推理时联合去噪视频与动作；Fast-WAM-IDM 先生成未来视频再出动作；Fast-WAM w/o video co-train 维持结构和推理不变，只删除视频损失。这一组变体同时控制了骨干、tokenization 和大部分训练 recipe。
+
+| 模型 | 训练期视频目标 | 测试期未来生成 | RoboTwin 平均 SR | LIBERO 平均 SR |
+|---|---:|---:|---:|---:|
+| Fast-WAM | 是 | 否 | 91.8 | 97.6 |
+| Fast-WAM-Joint | 是 | 是，联合 | 90.6 | 98.5 |
+| Fast-WAM-IDM | 是 | 是，先视频后动作 | 91.3 | 98.0 |
+| w/o video co-train | 否 | 否 | 83.8 | 93.5 |
+
+真实毛巾折叠任务中，无视频联合训练版本仅有 10% 成功率；Fast-WAM 延迟为 190 ms，而 IDM 版本为 810 ms。论文由此推断训练期视频建模比测试期显式生成更重要。[实验结果](https://arxiv.org/html/2603.16666v1)
+
+**结论边界。** 该结论只说明：在这些以单个 action chunk 生成、闭环反馈充分、没有显式候选搜索的任务上，像素级未来去噪的边际收益较小。它没有排除以下场景：部分可观测任务、需要记忆的长程任务、多个未来 mode 的分支选择、带 value/reward 的 candidate planning、或测试时分布显著偏移。Fast-WAM 也只在一个共享实现框架中完成控制，尚未覆盖模型尺度和预训练数据的交互效应。
+
+### 3.3 Bidirectional 与 Autoregressive：应按两个时间尺度理解
+
+扩散模型的“双向”与语言模型的“自回归”容易被误读成二选一。WAM 至少有两个时间尺度：**chunk 之间**以及**chunk 内部**。
+
+| 设计 | chunk 之间 | chunk 内 | 优点 | 风险 |
+|---|---|---|---|---|
+| 全序列 bidirectional | 所有位置共同去噪 | 双向 | 并行、全局一致性强 | 固定长度；闭环插入新观察困难；可能下采样破坏 FPS 对齐 |
+| chunk-level AR | 只读取过去 clean/KV chunks | 通常双向并行去噪 | 可写回真实观察、支持 KV cache、保留历史 | teacher forcing 与部署仍可能有偏移；长历史缓存成本 |
+| action-level AR | 每个动作只读过去动作 | 单向 | 严格因果 | latency 高；可能破坏 action chunk 的整体协调 |
+| block-causal hybrid | 历史 chunk 因果 | 块内双向 | 兼顾闭环与 chunk 一致性 | mask 与 token 对齐设计复杂 |
+
+DreamZero 认为 bidirectional WAM 在长任务中需要把固定帧数覆盖到整段 caption，视频下采样会扭曲 native FPS；AR 则可保留原始帧率与语言—视频—动作对齐。LingBot-VA 进一步明确：每个 chunk 内 tokens 通过 bidirectional attention 并行生成，跨 chunk 保持 causal structure。当前最值得比较的是 **block-causal mask、chunk 大小、caption 时间范围、native FPS 与闭环反馈频率的联合设计**，不能只比较“纯 BD vs 纯 AR”的标签。
+
+### 3.4 AHA-WAM：世界规划和动作控制不需要同频
+
+Fast-WAM 将未来视频从推理路径移除，但每个 action update 仍要调用视频骨干。AHA-WAM 更进一步，把 5B video DiT 视为低频 world planner，把小型 action DiT 视为高频 executor。一次 planner 前向产生多个 layer-wise latent contexts，并被后续多个 action chunks 复用。
+
+复用会产生“context 已旧、当前观察已变”的问题。Observation-Guided Video-Context Routing（OVCR）用最新观察构造 query，从每层 planner context 读取与当前 chunk 有关的信息，再用 gated residual 更新 K/V。Horizon-adaptive offset training 则随机改变 action chunk 在长 planning horizon 中的相位，使 executor 在训练时见过异步部署产生的各种 planner–executor offset。rolling K/V memory 保存历史观察，延长低频 planner 的时间感受野。[AHA-WAM 方法](https://arxiv.org/html/2606.09811v1)
+
+RoboTwin 上，Naive-Async 从 Fast-WAM 的 91.83% 降至 88.60%；加入 K/V memory 后恢复到 91.01%，加入 OVCR 为 91.47%，完整 AHA-WAM 达到 92.80%。延迟报告为 Fast-WAM 190 ms、AHA-WAM 41.37 ms、AHA-WAM-Flash 17.56 ms，对应 5.26、24.17 与 56.95 Hz。[AHA-WAM 实验](https://arxiv.org/html/2606.09811v1)
+
+需要注意，Fast-WAM 延迟采用其官方报告，其余方法在单张 RTX 5090D 上测量；这些数字足以说明架构趋势，但不构成完全统一硬件与 kernel 的系统 benchmark。
+
+### 3.5 WAM-RL：同时在线更新 world model 与 actor
+
+WAM-RL 将 WA 模型拆成 DiT world model 与读取其中间 latent 的 actor。world model 生成未来，actor 将想象翻译为动作；环境返回真实观察后，两部分分别得到更新。
+
+**World update。** 成功轨迹用于 online video SFT。直接更新 world model 会改变 actor 依赖的 latent distribution，导致 actor 迅速失效。论文因此用 pretrained world model 的特征分布作为参考，以 Gaussian approximation 定义 latent KL regularization，约束在线更新后的特征几何。
+
+**Actor update。** 执行动作后，将真实观察与想象未来比较，构造 reconstruction-based dense reward。为让 flow policy 能使用 policy gradient，论文通过 Flow-SDE 给确定性流加入随机性，将去噪轨迹视作 latent MDP，并估计每个去噪 transition 的 likelihood。
+
+实验基于 Genie Envisioner-ACT，使用 8 张 A800 混合训练 8 小时。LIBERO-Object 从 Base 的 68% 提升到 actor-only RL 的 78% 和 WAM-RL 的 82%；RLBench Water Plants 从 19% 变为 18% 与 22%。奖励消融中 Pixel MSE 达到 21%，Optical Flow MSE 为 19%，DINO MSE 为 16%，V-JEPA2 为 17%。Optical Flow 对成功/失败的 reward separation 最大，却没有带来更好的策略。[WAM-RL 实验](https://arxiv.org/html/2606.17906v1)
+
+这一反常结果说明，**奖励的二分类可分性、与 world-model latent 的几何对齐、on-policy 梯度平滑性是三件不同的事。** WAM-RL 的证据范围仍很窄：一个 LIBERO suite、一个 RLBench 任务、提升幅度有限，而且没有完整报告随环境交互步数变化的 sample-efficiency curve。
+
+### 3.6 HALO-WA：冻结 WAM，用 latent-guided residual policy 做部署适配
+
+HALO-WA 处理的是 WAM 在最后几毫米对齐、插入和接触阶段的误差。冻结 WA backbone 后，模型输出 reference action chunk，并抽取视觉编码和动作生成过程中的 WAM latent features。轻量 actor-critic adapter 的状态因此包含三部分：proprioceptive state、reference action、distributed WAM latents。
+
+Adapter 使用 hybrid attention：self-attention 建模状态—动作 chunk 的内部结构，cross-attention 从高维 latent memory 中读取与当前纠错有关的信息。在线优化采用 TD3，actor loss 再加 BC regularization；BC target 可以来自 WAM reference action、成功执行动作或 human intervention action，从而在 critic 尚不准确时限制策略漂移。[HALO-WA 方法](https://arxiv.org/html/2607.04265v1)
+
+四个真实精密任务上，WA-base 平均成功率为 26.4%，HALO-WA 为 87.1%，训练时间为每任务 45–75 分钟。Stick Insertion 消融中，direct concat、cross attention、self attention、hybrid attention 分别达到 28.6%、57.1%、62.9% 与 94.3%；去掉 latent 只有 22.9%，使用 WA latent 为 94.3%。RoboTwin 的 Click Bell 从 54% 提升到 97%，Beat Block Hammer 从 22% 提升到 45%。[HALO-WA 实验](https://arxiv.org/html/2607.04265v1)
+
+其限制是在线训练仍使用两张 A800 的云—机器人系统，真实任务包含人工干预，且四个任务都集中于 precision end-stage。当前结果能证明 WAM latent 对局部纠错有用，尚不能证明它们足以支持长程策略改写。
+
+## 4. 相关工作提供的补充证据
+
+### 4.1 LingBot-VA：因果历史、部分去噪与异步闭环
+
+LingBot-VA 使用 Wan2.2-5B 初始化视频流，并用窄 action stream 构成双流 MoT。视频和动作 token 按时间交错，跨 chunk 使用 causal mask；同一 chunk 内并行流匹配。Noisy History Augmentation 让 action decoder 适应未完全去噪的视频 latent，从而减少视频去噪步数。异步执行时，模型用最新真实观察做 forward-dynamics grounding，避免沿着过时的 imagined history 继续生成。其 RoboTwin Easy/Hard 平均成功率为 92.9%/91.6%，LIBERO 平均为 98.5%，长程任务提升更明显。[LingBot-VA](https://arxiv.org/abs/2601.21998)
+
+它与 DreamZero 一起支持 AR history/KV cache 对闭环部署的价值，但两者都没有在严格等预算、等帧率的实验中单独隔离 causal mask 的贡献。
+
+### 4.2 Cosmos Policy：把 future state 与 value 变成可调用接口
+
+Cosmos Policy 保持 Cosmos-Predict2-2B 主体结构，并把 action chunk、future proprioception、future images 与 expected returns 都编码为 latent frames。训练 batch 按 policy/world/value 目标分成 50/25/25，并用 conditioning masks 选择当前任务。LIBERO 为 98.5%，RoboCasa 为 67.1%；删除 auxiliary future/value supervision 后 LIBERO 下降 1.5 分，从随机初始化训练下降 3.9 分。RoboCasa 中逐步删除 world/value/future 辅助目标后，最终只预测动作的版本从 67.1% 降到 44.4%。[Cosmos Policy](https://arxiv.org/abs/2601.16163)
+
+这一结果与 Fast-WAM 并不冲突：两者都支持训练期 future supervision；Cosmos 额外证明了，当 future 与 value 用于候选轨迹选择时，测试时世界模型也能产生决策收益。
+
+### 4.3 GigaWorld-Policy：动作先行，未来视频负责验证动作
+
+GigaWorld-Policy 将依赖方向改为 observation → action → future video。blockwise causal mask 禁止 action token 读取 future-video token，future-video token 则能读取 observation 与 action。这样 future prediction 变成 action-conditioned dynamics constraint，避免动作质量依赖一个可能错误的先验未来。在真实四任务上平均成功率为 0.83，高于其列出的 Motus 0.76 与 Cosmos Policy 0.58；未来视频在测试时可以关闭。[GigaWorld-Policy](https://arxiv.org/abs/2603.17240)
+
+它与 Fast-WAM 共同指向一个设计原则：训练时用未来约束动作表示，推理时是否解码未来应由决策需求与延迟预算决定。
+
+### 4.4 RepWAM：重建质量与控制表征质量需要分别衡量
+
+传统 WAM 继承视频生成器的 VAE/tokenizer，其目标偏向像素重建，可能把容量用于背景纹理和外观细节。RepWAM 的 RepViTok 将视觉 latent 对齐到冻结视觉基础模型，保留对象身份、空间关系和交互语义；latent action tokenizer 则把相邻语义视觉状态之间的转移表示为动作 token，并用 forward prediction 与 backward consistency 训练。随后使用 block-causal flow transformer 联合生成 visual-action chunks。[RepWAM](https://arxiv.org/abs/2606.13674)
+
+论文同时报告 generation quality、open-loop action score 与 closed-loop real-robot execution，并指出 open-loop action accuracy 的提升不总能转化为可靠执行。这与“VAE 重建越好，生成/控制越好”的直觉形成直接冲突，也为后续设计 **interpolation-aware action latent metrics** 提供了出发点。
+
+### 4.5 A2World：action-conditioned 预训练可能比通用视频先验更接近控制
+
+A2World 在 2.1M+ 机器人轨迹、20+ embodiments 上学习 action-conditioned multi-view video generation，再从同一权重适配出 A2World-sim 与 A2World-policy。A2World-policy 在 LIBERO 平均成功率为 98.6%；LIBERO-Plus Spatial OOD 平均结果中，action-conditioned pretraining 版本为 88.5%，高于同表中的 Cosmos-initialized 80.2% 与 text-conditioned pretraining 85.8%。[A2World](https://arxiv.org/abs/2606.29501)
+
+这说明“从公开视频继承一般运动先验”与“从带真实动作标注的机器人数据学习因果动力学”可能是两种互补预训练。当前仍缺少同模型、同数据量、同 compute 下的 video-only、action-to-video、joint video-action 三方比较。
+
+## 5. 跨论文方法差异
+
+### 5.1 世界分支究竟在策略中承担什么功能
+
+| 功能 | 代表工作 | 训练期作用 | 推理期作用 | 尚未解决的问题 |
+|---|---|---|---|---|
+| 像素未来生成器 | DreamZero、LingBot-VA | 密集动态监督与动作对齐 | 生成未来 latent/frames 辅助动作 | 像素质量与策略质量的因果关系 |
+| 辅助表征正则 | Fast-WAM | 塑造物理与交互 representation | 只保留当前帧的世界特征 | 哪些层/denoise time 真正携带控制信息 |
+| 动作一致性验证器 | GigaWorld-Policy | 约束动作能产生合理未来 | 可选生成 | action-to-video loss 是否优于 joint loss |
+| 低频 planner context | AHA-WAM | 学长期场景演化 | 多个 action updates 复用并路由 context | context stale 的可测量边界 |
+| 候选 evaluator | Cosmos Policy | 联合学习 state/value | 排序候选 action trajectories | world error 如何影响 planning regret |
+| 在线可塑模型 | WAM-RL | 预训练 latent 是 actor 接口 | rollout 后更新 world 与 actor | 如何控制 latent drift 与灾难性遗忘 |
+| 冻结 RL memory | HALO-WA | WAM 保持不变 | adapter 读取 latent 和 action prior | 能否从局部纠错扩展到策略重构 |
+
+### 5.2 统一的性能分解
+
+WAM 的最终策略性能可以概念性地拆成四个环节：
+
+$$
+\text{world representation}
+\rightarrow \text{action grounding}
+\rightarrow \text{feedback correction}
+\rightarrow \text{runtime feasibility}.
+$$
+
+视频质量只直接覆盖第一个环节的一部分。即使未来视频视觉上合理，动作解码器也可能无法从 latent 中恢复正确控制；即使动作解码正确，低控制频率也会错过接触事件；即使离线性能很好，部署误差仍可能需要 RL adapter。Fast-WAM 的结果主要说明第一环节可以通过训练期视频监督获得；WAM-RL 与 HALO-WA 则说明第三环节必须单独处理。
+
+### 5.3 “视频预测越好，动作越好”需要拆成三个命题
+
+1. **重建命题：** tokenizer 的 PSNR/SSIM/rMSE 越好，world latent 越适合控制。RepWAM 已给出反例迹象。
+2. **生成命题：** future video 的 FVD/FID 越好，动作成功率越高。DreamZero 报告模型规模与视频质量、策略性能共同提升，但相关性尚未排除规模和训练数据的混杂。
+3. **可控命题：** latent 能正确表达“动作导致的状态变化”，其局部插值和反事实变化与真实动力学一致。这一命题最接近策略所需，但目前缺少标准指标。
+
+因此，下一阶段需要同时测量重建/生成质量，以及 latent 对动作条件、接触变化、目标进度和闭环纠错的可读性。
+
+### 5.4 学到联合分布不等于学到动作的因果作用
+
+联合拟合 $p(o',a\mid o,\ell)$ 允许模型利用数据中的相关性：在某种观察和语言下，某类未来视频经常与某段动作共同出现。这个目标本身不保证模型理解 $a$ 的干预会怎样改变 $o'$。当演示数据中“动作—结果”组合单一时，模型甚至可以主要依靠观察与语言预测两种输出，而较少使用动作和未来之间的因果联系。
+
+GigaWorld-Policy 的 observation → action → future-video 依赖方向，以及 A2World 的 action-conditioned world pretraining，都更直接地要求未来预测响应动作变化；但它们仍需要 counterfactual evaluation 才能证明这种敏感性具有因果意义。强证据应来自固定 $(o,\ell)$、主动改变候选动作 $a$，并验证模型预测的未来变化与真实环境干预一致，而不能只看自然演示上的 video reconstruction 或 joint likelihood。
+
+## 6. 实验设计与证据强度审计
+
+| 工作 | 主要实验 | 最有价值的控制 | 关键结果 | 证据限制 |
+|---|---|---|---|---|
+| DreamZero | 多种真实机器人泛化、500h 数据、跨 embodiment、AR/BD | diverse vs repetitive；5B vs 14B；AR vs BD | 14B AR 约 7 Hz；video-only transfer 相对提升超 42% | 多个系统因素与架构因素共同变化；部分评测为内部任务 |
+| Fast-WAM | LIBERO、RoboTwin、真实毛巾折叠 | Joint/IDM/no-video 在共享框架内比较 | video co-train 的删除损失显著大于移除测试时想象 | 真实任务单一；没有 candidate planning、memory-only 任务 |
+| LingBot-VA | RoboTwin、LIBERO、真实长程与精密任务 | noisy history、memory、异步执行等消融 | RoboTwin 92.9/91.6，LIBERO 98.5 | 大规模预训练与架构增益难分离 |
+| Cosmos Policy | LIBERO、RoboCasa、ALOHA planning | 删除 future/value targets；从零训练；direct vs planning | 98.5/67.1；困难 ALOHA planning +12.5 分 | planning 使用额外 rollout 后训练，和 direct policy 预算不同 |
+| AHA-WAM | RoboTwin、真实四任务、latency | Naive-Async → memory/OVCR/full | 92.8%，41.37 ms；Flash 17.56 ms | latency 测量并非所有方法同硬件同实现 |
+| RepWAM | RoboTwin、真实三任务、tokenizer ablation | reconstruction VAE vs semantic tokenizer | semantic token 同时改善 world/action/closed-loop | 从零预训练与现有 pretrained WAM 比较并非完全公平 |
+| WAM-RL | LIBERO-Object、RLBench Water Plants | Base、actor-only、joint update；reward ablation | 68→82；19→22 | 任务数少、提升小、缺少完整 interaction curve |
+| HALO-WA | 真实四 precision tasks、RoboTwin 两任务 | attention/latent/interface 消融 | 26.4→87.1；45–75 分钟/任务 | 真实训练含人工干预；两张 A800；任务集中于末端精修 |
+| A2World | 大规模 action-to-video、simulator、joint policy | pretraining type comparison | 2.1M+ trajectories；OOD 88.5 | 数据规模巨大，仍需严格 matched-compute 对比 |
+
+证据等级可按以下规则维护：
+
+- **A 级：** 同骨干、同数据、同训练预算，只改变一个变量的控制实验。Fast-WAM 的核心变体接近此级。
+- **B 级：** 统一 benchmark 与协议，但预训练数据、模型规模或系统实现不同。多数跨论文排行榜属于此级。
+- **C 级：** 少量真实任务、私有数据或不同硬件下的系统结果。可证明可行性，不能直接支持普遍排序。
+
+## 7. 值得进一步验证的研究问题
+
+### RQ1：测试时显式想象在什么条件下才有净收益？
+
+**研究假设。** 当任务满足部分可观测、长程分支、多模态未来、失败恢复或需要 candidate ranking 中至少一项时，显式未来才可能超过纯 latent world encoder；在短程、强闭环反馈、单一动作 mode 的任务上，生成像素未来主要增加延迟。
+
+**实验。** 做完整 $2\times2$ 因子实验：训练期 video objective 开/关 × 测试期 future generation 开/关。再正交扫描 horizon、observation occlusion、扰动发生时间、action multimodality 和 candidate count。四组必须共享 backbone、action head、数据、优化步数与 sampling budget。指标除 SR 外，加入恢复成功率、规划 regret、响应延迟、每成功 episode 的 GPU 时间。
+
+**关键补充。** 对“测试时想象”组分别测试单样本 joint generation 与 $K$ 候选 + value/ranking。若只有后者提升，就说明收益来自显式决策搜索，而非未来视频本身。
+
+### RQ2：最优时间结构是否是“跨 chunk 因果、chunk 内双向”？
+
+**研究假设。** block-causal hybrid 在控制性能、动作平滑度和 latency 上优于全序列 BD 与 action-level AR；AR 的收益主要来自 native-FPS 对齐、真实观察写回和 KV cache，单步表达能力的变化可能较小。
+
+**实验。** 固定同一 DiT 与同一 token 顺序，只更改 mask：full bidirectional、block-causal、action-token causal 三种。使用完全相同的 caption window 与 native FPS，避免 DreamZero 对比中的 subsampling 混杂。评估 action jerk、video-action temporal alignment、扰动后恢复时间、memory-only tasks 和 KV cache 显存。
+
+### RQ3：哪些 WAM latent 应暴露给 RL？
+
+**研究假设。** 中层 video latents 更适合表示对象与接触几何，后层 action latents 更贴近可执行控制；早期高噪声 latent 可能保留多模态探索信息，晚期 latent 更适合精确纠错。直接把所有 token 拼接给 critic 会导致优化不稳。
+
+**分阶段实验。** 先冻结 WAM，对 layer × denoise time × modality 做 probe，预测 success、subgoal progress、contact、slip、collision 和下一步 reward；再只把排名最高的 latent 交给 HALO 式 adapter；最后加入 observation-conditioned gated fusion，让模型在不同任务阶段选择 layer。这个“probe → adapter → gated fusion”路径比一开始做全 token routing 更容易确定收益来自哪里。
+
+### RQ4：如何定义能预测 rollout success 的 WAM latent 指标？
+
+**研究假设。** rMSE、PSNR、SSIM 或单纯 action L1 不能稳定预测闭环表现；真正相关的属性是 **mode-aware interpolatability、action-conditioned transition linearity 与 semantic controllability**。
+
+可以构造 action-iFID/transition-iFID：在相同任务条件下选取两条成功轨迹的 visual-action latents，求局部中点或沿 latent path 插值，解码中间 action/world transition；比较其语义状态变化、动力学可实现性和真实 rollout 成功率。最终报告不同 latent metric 与 closed-loop SR 的 Spearman/Pearson correlation，而不把某个 reconstruction metric 直接当作结论。
+
+### RQ5：为什么 WAM-RL 中 reward separation 最大的指标没有得到最好策略？
+
+**研究假设。** 一个 reward 能区分成功与失败，并不意味着它在 on-policy 邻域内具有平滑、低方差、方向正确的梯度。Pixel MSE 可能因为与 world model 的训练几何一致而更容易优化，Optical Flow 虽区分度大，但局部 reward landscape 过尖或受遮挡影响。
+
+**实验。** 对 pixel、flow、DINO、V-JEPA、learned success reward 统一尺度与均值方差，测量：(1) 成功/失败 AUROC；(2) 同一状态附近动作扰动的 reward smoothness；(3) 与真实 task progress 的 rank correlation；(4) policy-gradient variance；(5) 最终 SR。只有同时报告这五项，才能解释“可分但不可优化”。
+
+### RQ6：在线更新 world model 时如何避免 actor 接口漂移？
+
+**研究假设。** WAM-RL 的全局 latent KL 只能限制总体分布，无法保证 actor 依赖的具体 layer、token 与 denoise-time 接口稳定。layer-wise feature matching、EMA teacher、adapter-only world update 或显式 interface distillation 可能更有效。
+
+**实验。** 在线训练中持续记录各层 CKA、feature mean/covariance、actor Q-value calibration 与 SR。依次比较 no constraint、global KL、selected-layer KL、EMA feature distillation、world LoRA-only。应同时测量 adaptation gain 与旧任务遗忘，避免只在当前任务上判断稳定性。
+
+### RQ7：通用视频预训练与 action-conditioned 机器人预训练各自提供什么？
+
+**研究假设。** web video 主要提供对象、场景与一般运动语义；action-to-video 机器人预训练主要提供接触、可控性和 embodiment-invariant dynamics；joint video-action 训练负责把两者接到动作解码器。
+
+**实验。** 在同一 Wan/Cosmos 初始化与同一总 compute 下比较：video-only、text-video、action-to-video、joint video-action 四种继续预训练。OOD 评测必须把外观、相机、语言、动力学、embodiment 与动作定义分别扰动，不能只给一个平均分。
+
+### RQ8：WAM 是否真正使用了动作—结果之间的因果关系？
+
+**研究假设。** 仅用 joint video-action demonstrations 训练的模型，可能主要学习 $(o,\ell)$ 到常见动作和常见未来的相关映射；action-conditioned 预训练、动作反事实增强或显式 forward-dynamics loss 会提升对干预动作的敏感性与 OOD controllability。
+
+**实验。** 构造同一初始观察和指令下的 paired interventions：只改变动作方向、幅度、gripper timing 或接触顺序，收集对应真实未来。评估模型的 counterfactual ranking accuracy、预测变化与真实变化的方向一致性、action-shuffling performance drop，以及由错误候选动作产生的 future rejection rate。再比较 joint WAM、action-to-video world model、GigaWorld 式 action-first WAM 与加入 counterfactual augmentation 的版本。若打乱 action 后 world prediction 几乎不变，说明模型对动作条件的利用很弱。
+
+## 8. 当前最可执行的研究路线
+
+结合现有计算条件与研究重点，近期最容易形成清晰证据链的方向是：**WAM latent 的可读性与 RL 接口选择**。
+
+### 阶段 A：离线 latent audit
+
+在 DreamZero/Fast-WAM 的同一批 RoboTwin 轨迹上缓存不同 DiT layer、不同 flow time、video/action 两种模态的 latent。为每个时间点生成 contact、grasp、subgoal progress、failure type 与未来成功标签，训练线性 probe 和两层 MLP probe。输出 layer × denoise-time heatmap，并测量 probe 指标与 rollout SR 的相关性。
+
+### 阶段 B：轻量在线 adapter
+
+冻结 WAM，只使用 top-$k$ latent groups、reference action 与 proprio state，训练 TD3+BC residual/chunk adapter。对比 no-latent、final-layer-only、all-layer concat、probe-selected、gated-selected。这里应把“网络容量”控制为一致，避免把 latent 增益与更大 adapter 混在一起。
+
+### 阶段 C：允许有限 world adaptation
+
+在最有效的 latent interface 上，只给 world model 加 LoRA，并使用 selected-layer feature distillation 或 KL；比较 frozen、LoRA without constraint、LoRA with constraint。这样可以直接连接 HALO-WA 的冻结策略与 WAM-RL 的联合更新策略。
+
+### 阶段 D：加入 interpolation-aware metric
+
+在不同 checkpoint 和不同 layer 上测 action-iFID/transition consistency，并检验其是否能提前预测在线 RL 的最终收益。如果相关性稳定，这可以形成独立贡献：从“哪个 WAM 分数高”转向“什么 latent 更适合被策略与 RL 使用”。
+
+## 9. 与当前 DreamZero × RoboTwin 复现直接相关的记录
+
+当前已观察到：约 50 条 RoboTwin 轨迹进行 DreamZero LoRA SFT 时，训练到约 2000 steps 后策略崩塌，基模能力明显丢失。这个现象不能仅归因于 overfitting；对 WAM 来说，动作语义错位和 latent interface 漂移都可能制造同样现象。
+
+在继续把训练步数作为主变量前，应固定检查以下量：
+
+1. embodiment tag 与 projector/head 的映射；
+2. joint/EE、absolute/delta、坐标系、Rot6D/四元数、gripper 编码与控制频率；
+3. normalization statistics 是否来自正确 embodiment；
+4. action horizon、multi-anchor、max chunk size 与视频帧的时间对齐；
+5. 多视角拼接顺序、分辨率和语言 prompt；
+6. 同一 checkpoint 分别关闭/开启 LoRA 评测，区分 base pipeline 问题和 adapter 问题；
+7. 训练前后关键 layer 的 latent mean/covariance、CKA 与 action decoder 输出范围。
+
+如果第 1–5 项存在任何不一致，增加数据或减少学习率都不会解决根因；如果这些项一致而 latent 仍快速漂移，则可以直接将其转化为 RQ6 的小规模实证。
+
+## 10. 文档维护协议
+
+### 新论文录入模板
+
+每篇新论文至少记录以下字段：
+
+```text
+Paper / arXiv ID / version / checked date
+Problem definition
+Inputs / outputs / action representation
+World-action factorization
+Attention mask: across chunks / within chunk / cross-modal visibility
+Training objectives and loss weights
+Inference: future generation? candidate search? observation write-back?
+Pretraining data / robot data / model size / hardware
+Benchmarks / trials / seeds / latency protocol
+Best controlled ablation
+Claims directly supported
+Uncontrolled confounders
+Reproducibility assets
+Relationship to RQ1–RQ8
+```
+
+### 更新规则
+
+- arXiv 出现新版本时，先更新版本号和 change note，再修改正文结论。
+- 跨论文数字只有在 benchmark、数据拆分和评测次数一致时才进入主比较表；否则保留为单论文证据。
+- latency 必须同时记录 GPU、精度、denoising steps、CFG、action horizon、是否异步和是否包含 VAE。
+- “future imagination 有/无”必须进一步标注：pixel decode、latent generation、planner context、candidate search、value ranking。
+- 所有研究结论分别标记为论文证据、跨论文推断或研究假设。
+
+### 版本日志
+
+| 版本 | 日期 | 内容 |
+|---|---|---|
+| 0.1.0 | 2026-07-09 | 建立统一定义与比较轴；纳入 DreamZero、Fast-WAM、LingBot-VA、Cosmos Policy、GigaWorld-Policy、AHA-WAM、RepWAM、WAM-RL、A2World、HALO-WA；提出 RQ1–RQ8 与当前复现实验路线。 |
+
+## 11. 参考文献
+
+1. [World Action Models are Zero-shot Policies / DreamZero, arXiv:2602.15922](https://arxiv.org/abs/2602.15922)
+2. [Fast-WAM: Do World Action Models Need Test-time Future Imagination?, arXiv:2603.16666](https://arxiv.org/abs/2603.16666)
+3. [Causal World Modeling for Robot Control / LingBot-VA, arXiv:2601.21998](https://arxiv.org/abs/2601.21998)
+4. [Cosmos Policy: Fine-Tuning Video Models for Visuomotor Control and Planning, arXiv:2601.16163](https://arxiv.org/abs/2601.16163)
+5. [GigaWorld-Policy: An Efficient Action-Centered World–Action Model, arXiv:2603.17240](https://arxiv.org/abs/2603.17240)
+6. [Do World Action Models Generalize Better than VLAs? A Robustness Study, arXiv:2603.22078](https://arxiv.org/abs/2603.22078)
+7. [AHA-WAM: Asynchronous Horizon-Adaptive World-Action Modeling, arXiv:2606.09811](https://arxiv.org/abs/2606.09811)
+8. [RepWAM: World Action Modeling with Representation Visual-Action Tokenizers, arXiv:2606.13674](https://arxiv.org/abs/2606.13674)
+9. [WAM-RL: World-Action Model Reinforcement Learning with Reconstruction Rewards and Online Video SFT, arXiv:2606.17906](https://arxiv.org/abs/2606.17906)
+10. [Learning Transferable Dynamics Priors from Action to World Modeling / A2World, arXiv:2606.29501](https://arxiv.org/abs/2606.29501)
+11. [HALO-WA: Hybrid-Attention Latent-Guided Online Reinforcement Learning for World-Action Models, arXiv:2607.04265](https://arxiv.org/abs/2607.04265)
